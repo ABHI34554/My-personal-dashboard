@@ -13,11 +13,11 @@
                 extend: {
                     colors: {
                         os: {
-                            bg: '#1c1a17',
-                            card: '#24221f',
-                            border: '#3a3630',
-                            text: '#d6d3cd',
-                            muted: '#8b867d',
+                            bg: 'var(--os-bg)',
+                            card: 'var(--os-card)',
+                            border: 'var(--os-border)',
+                            text: 'var(--os-text)',
+                            muted: 'var(--os-muted)',
                             accent: '#d96c4a'
                         }
                     },
@@ -31,17 +31,35 @@
         }
     </script>
     <style>
+        /* LIGHT MODE PALETTE */
+        :root {
+            --os-bg: #f5f3ef;
+            --os-card: #ffffff;
+            --os-border: #e6e4df;
+            --os-text: #1c1a17;
+            --os-muted: #8b867d;
+        }
+        
+        /* DARK MODE PALETTE */
+        .dark {
+            --os-bg: #1c1a17;
+            --os-card: #24221f;
+            --os-border: #3a3630;
+            --os-text: #d6d3cd;
+            --os-muted: #8b867d;
+        }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3a3630; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--os-border); border-radius: 10px; }
     </style>
 </head>
-<body class="bg-os-bg text-os-text font-sans p-4 md:p-8 min-h-screen antialiased selection:bg-os-accent selection:text-white">
+<body class="bg-os-bg text-os-text font-sans p-4 md:p-8 min-h-screen antialiased selection:bg-os-accent selection:text-white transition-colors duration-300">
 
     <header class="flex justify-between items-center mb-6 text-xs font-mono text-os-muted uppercase tracking-widest">
-        <div>JERROD OS // V2.0</div>
+        <div>ABHI OS // V2.0</div>
         <div class="flex items-center gap-4 hidden md:flex">
-            <span>Brooklyn, NY 58°F</span>
+            <span>Delhi, IN 31°C</span>
             <span>BAT 92%</span>
             <span>NET 140MB/S</span>
             <button onclick="document.documentElement.classList.toggle('dark')" class="p-1 rounded-full bg-os-card border border-os-border hover:text-white transition cursor-pointer">
@@ -91,8 +109,8 @@
                     </div>
                 </div>
                 <div class="text-[10px] font-mono text-os-muted uppercase mt-auto flex justify-between pt-4 border-t border-os-border/50">
-                    <span>40.6782° N</span>
-                    <span>-73.9442° W</span>
+                    <span>28.6139° N</span>
+                    <span>77.2090° E</span>
                 </div>
             </section>
         </div>
@@ -111,30 +129,27 @@
                     </div>
                 </div>
             </section>
+            
             <section class="bg-os-card border border-os-border rounded-2xl p-6 shadow-lg flex-1">
                 <div class="flex justify-between items-center mb-6">
                     <div class="text-[10px] font-mono text-os-muted uppercase">04 // Calendar</div>
                     <div class="text-[10px] font-mono text-os-muted uppercase">Apr 2026</div>
                 </div>
                 
-                <h2 class="text-2xl font-serif text-white mb-6">Saturday, <span class="italic">April 18</span></h2>
+                <h2 class="text-2xl font-serif text-white mb-6">Sunday, <span class="italic">April 19</span></h2>
                 
                 <div class="flex justify-between gap-2 mb-8">
-                    <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Thu</span><span class="text-sm font-medium">16</span></div>
                     <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Fri</span><span class="text-sm font-medium">17</span></div>
-                    <div class="flex flex-col items-center bg-white text-black border border-white rounded-lg py-2 px-3 flex-1 text-center shadow-[0_0_15px_rgba(255,255,255,0.2)]"><span class="text-[10px] font-mono mb-1">Sat</span><span class="text-sm font-bold">18</span></div>
-                    <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Sun</span><span class="text-sm font-medium">19</span></div>
+                    <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Sat</span><span class="text-sm font-medium">18</span></div>
+                    <div class="flex flex-col items-center bg-white text-black border border-white rounded-lg py-2 px-3 flex-1 text-center shadow-[0_0_15px_rgba(255,255,255,0.2)]"><span class="text-[10px] font-mono mb-1">Sun</span><span class="text-sm font-bold">19</span></div>
+                    <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Mon</span><span class="text-sm font-medium">20</span></div>
                 </div>
 
                 <div class="space-y-4">
                     <div class="flex gap-4 items-start relative pb-4 border-b border-os-border">
                         <div class="w-12 text-[10px] font-mono text-os-accent mt-1">NOW</div>
-                        <div><div class="text-sm font-medium text-white">Studio deep work</div><div class="text-xs text-os-muted mt-1">Design review prep</div></div>
+                        <div><div class="text-sm font-medium text-white">Data Science Prep</div><div class="text-xs text-os-muted mt-1">Deep work session</div></div>
                         <div class="w-2 h-2 rounded-full bg-os-accent absolute right-0 top-2"></div>
-                    </div>
-                    <div class="flex gap-4 items-start relative pb-4">
-                        <div class="w-12 text-[10px] font-mono text-os-muted mt-1">4:00 PM</div>
-                        <div><div class="text-sm font-medium text-white">Sync · Maya & Theo</div><div class="text-xs text-os-muted mt-1">v2.7 roadmap</div></div>
                     </div>
                 </div>
             </section>
@@ -142,14 +157,14 @@
             <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg">
                 <div class="flex justify-between items-center mb-4">
                     <div class="text-[10px] font-mono text-os-muted uppercase">05 // Inbox</div>
-                    <div class="text-[10px] font-mono text-os-muted uppercase">2 Unread</div>
+                    <div class="text-[10px] font-mono text-os-muted uppercase">1 Unread</div>
                 </div>
                 <div class="space-y-3">
                     <div class="bg-os-bg border border-os-border rounded-xl p-3 flex gap-3 items-center">
-                        <div class="w-8 h-8 rounded-full bg-os-accent text-white flex items-center justify-center text-xs font-bold">ML</div>
+                        <div class="w-8 h-8 rounded-full bg-os-accent text-white flex items-center justify-center text-xs font-bold">GH</div>
                         <div class="flex-1 overflow-hidden">
-                            <div class="text-xs font-medium text-white flex justify-between"><span>Maya Lin</span><span class="text-os-muted text-[10px]">12m</span></div>
-                            <div class="text-[10px] text-os-muted truncate mt-0.5">Need your sign-off today</div>
+                            <div class="text-xs font-medium text-white flex justify-between"><span>GitHub Pages</span><span class="text-os-muted text-[10px]">Just now</span></div>
+                            <div class="text-[10px] text-os-muted truncate mt-0.5">Deployment successful! Welcome online.</div>
                         </div>
                     </div>
                 </div>
