@@ -53,7 +53,7 @@
     <main class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4">
 
         <div class="lg:col-span-3 flex flex-col gap-4">
-           <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg">
+            <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg">
                 <div class="text-[10px] font-mono text-os-muted mb-4 uppercase">01 // Operator <span class="float-right text-green-500">● Online</span></div>
                 <div class="flex items-center gap-4">
                     <img src="https://ui-avatars.com/api/?name=Abhi&background=d96c4a&color=fff" alt="Profile" class="w-16 h-16 rounded-xl border border-os-border object-cover">
@@ -74,7 +74,6 @@
                 </div>
             </section>  
                     
-            
             <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg flex-1 min-h-[300px] relative flex flex-col">
                 <div class="text-[10px] font-mono text-os-muted mb-4 uppercase flex justify-between">
                     <span>02 // Location</span>
@@ -99,7 +98,7 @@
         </div>
 
         <div class="lg:col-span-6 flex flex-col gap-4">
-           <section class="bg-os-card border border-os-border rounded-2xl p-6 flex justify-between items-center shadow-lg">
+            <section class="bg-os-card border border-os-border rounded-2xl p-6 flex justify-between items-center shadow-lg">
                 <div>
                     <div class="text-[10px] font-mono text-os-muted mb-2 uppercase">03 // Session</div>
                     <h1 class="text-3xl md:text-4xl font-serif text-white tracking-wide">Good <span class="italic text-os-muted" id="greeting-display">day</span>, Abhi.</h1>
@@ -193,8 +192,7 @@
                 <div class="flex justify-between text-[10px] font-mono text-os-muted"><span>1:42</span><span>5:03</span></div>
             </section>
 
-            
-               <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg flex-1">
+            <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg flex-1">
                 <div class="text-[10px] font-mono text-os-muted mb-4 uppercase flex justify-between"><span>08 // Project</span><span>Phase 1</span></div>
                 <h3 class="text-sm font-medium text-white">MoneyWise App</h3>
                 <p class="text-[10px] font-mono text-os-muted mt-1 mb-4 uppercase">Gamified Finance Web App</p>
@@ -223,35 +221,27 @@
 
     </main>
 
-<script>
+    <script>
         function updateClock() {
             const now = new Date();
             
-            // 1. Format the Time (Hours and Minutes)
-            // padStart(2, '0') ensures "9" becomes "09"
             let hours = now.getHours().toString().padStart(2, '0');
             let minutes = now.getMinutes().toString().padStart(2, '0');
             
-            // 2. Format the Date (e.g., Sunday · April 19, 2026)
             const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
             let dateString = now.toLocaleDateString('en-US', options).replace(',', ' ·');
             
-            // 3. Determine the Greeting
             let currentHour = now.getHours();
             let greeting = "evening";
             if (currentHour < 12) greeting = "morning";
             else if (currentHour < 17) greeting = "afternoon";
 
-            // 4. Inject the data into the HTML IDs we created
             document.getElementById('time-display').innerHTML = `${hours} <span class="text-os-muted animate-pulse">:</span> ${minutes}`;
             document.getElementById('date-display').innerText = dateString;
             document.getElementById('greeting-display').innerText = greeting;
         }
 
-        // Run the function immediately when the page loads
         updateClock();
-        
-        // Then, run it again every 1000 milliseconds (1 second)
         setInterval(updateClock, 1000);
     </script>
 </body>
