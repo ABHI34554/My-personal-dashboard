@@ -224,5 +224,36 @@
 
     </main>
 
+<script>
+        function updateClock() {
+            const now = new Date();
+            
+            // 1. Format the Time (Hours and Minutes)
+            // padStart(2, '0') ensures "9" becomes "09"
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            
+            // 2. Format the Date (e.g., Sunday · April 19, 2026)
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            let dateString = now.toLocaleDateString('en-US', options).replace(',', ' ·');
+            
+            // 3. Determine the Greeting
+            let currentHour = now.getHours();
+            let greeting = "evening";
+            if (currentHour < 12) greeting = "morning";
+            else if (currentHour < 17) greeting = "afternoon";
+
+            // 4. Inject the data into the HTML IDs we created
+            document.getElementById('time-display').innerHTML = `${hours} <span class="text-os-muted animate-pulse">:</span> ${minutes}`;
+            document.getElementById('date-display').innerText = dateString;
+            document.getElementById('greeting-display').innerText = greeting;
+        }
+
+        // Run the function immediately when the page loads
+        updateClock();
+        
+        // Then, run it again every 1000 milliseconds (1 second)
+        setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>
