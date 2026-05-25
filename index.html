@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal OS Dashboard</title>
+    <title>Abhinav OS // Miles Morales Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        os: {
-                            bg: 'var(--os-bg)',
-                            card: 'var(--os-card)',
-                            border: 'var(--os-border)',
-                            text: 'var(--os-text)',
-                            muted: 'var(--os-muted)',
-                            accent: '#d96c4a'
+                        brand: {
+                            canvas: 'var(--canvas)',
+                            card: 'var(--card-bg)',
+                            border: 'var(--card-border)',
+                            text: 'var(--text-color)',
+                            muted: 'var(--text-muted)',
+                            accent: '#ff1722', // Spider-Man Crimson Red
+                            accentGlow: 'rgba(255, 23, 34, 0.25)',
+                            carbon: '#121214',
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
                         mono: ['Space Mono', 'monospace'],
                     }
                 }
@@ -31,218 +33,500 @@
         }
     </script>
     <style>
-        /* LIGHT MODE PALETTE */
+        /* COLOR PALETTES */
         :root {
-            --os-bg: #f5f3ef;
-            --os-card: #ffffff;
-            --os-border: #e6e4df;
-            --os-text: #1c1a17;
-            --os-muted: #8b867d;
+            --canvas: #06070d; /* Deep Spider-Verse Charcoal */
+            --card-bg: rgba(10, 11, 20, 0.55);
+            --card-border: rgba(255, 23, 34, 0.08);
+            --text-color: #f8fafc;
+            --text-muted: #64748b;
+            --spotlight-color: rgba(255, 23, 34, 0.1);
         }
         
-        /* DARK MODE PALETTE */
-        .dark {
-            --os-bg: #1c1a17;
-            --os-card: #24221f;
-            --os-border: #3a3630;
-            --os-text: #d6d3cd;
-            --os-muted: #8b867d;
+        .light-theme {
+            --canvas: #f8fafc; /* Crisp spider-web white */
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(255, 23, 34, 0.12);
+            --text-color: #0f172a;
+            --text-muted: #475569;
+            --spotlight-color: rgba(255, 23, 34, 0.06);
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--os-border); border-radius: 10px; }
+        /* GRAINY NOISE OVERLAY */
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.035;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* STRUCTURAL BLUEPRINT GRID */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255, 23, 34, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 23, 34, 0.015) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bg-radial-vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 10%, var(--canvas) 85%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* RADIAL MESH GRADIENT BLOBS */
+        @keyframes meshDrift {
+            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+            33% { transform: translate(40px, -60px) scale(1.15) rotate(120deg); }
+            66% { transform: translate(-30px, 30px) scale(0.9) rotate(240deg); }
+            100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
+        }
+
+        .animate-mesh1 { animation: meshDrift 22s infinite alternate ease-in-out; }
+        .animate-mesh2 { animation: meshDrift 28s infinite alternate-reverse ease-in-out; }
+
+        /* PREMIUM SQUIRCLE BENTO CARDS */
+        .bento-card {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(35px) saturate(140%);
+            -webkit-backdrop-filter: blur(35px) saturate(140%);
+            border-radius: 2rem; 
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            z-index: 10;
+            
+            /* Specular glowing red borders */
+            background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                        linear-gradient(135deg, rgba(255, 23, 34, 0.18), rgba(255, 255, 255, 0.03)) border-box;
+            border: 1px solid transparent;
+            box-shadow: 
+                0 4px 30px rgba(0, 0, 0, 0.04),
+                inset 0 1px 1px rgba(255, 23, 34, 0.15),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .light-theme .bento-card {
+            background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                        linear-gradient(135deg, rgba(255, 23, 34, 0.22), rgba(15, 23, 42, 0.03)) border-box;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.04),
+                inset 0 1px 1px rgba(255, 255, 255, 0.45),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.02);
+        }
+
+        /* SPOTLIGHT SHINE */
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: radial-gradient(
+                450px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+                var(--spotlight-color),
+                transparent 60%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .bento-card:hover::before {
+            opacity: 1;
+        }
+
+        .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 23, 34, 0.25);
+            border-color: rgba(255, 23, 34, 0.4);
+        }
+
+        .light-theme .bento-card:hover {
+            box-shadow: 
+                0 20px 40px rgba(255, 23, 34, 0.08),
+                inset 0 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 23, 34, 0.12); border-radius: 10px; }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.4s ease;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .glow-accent {
+            text-shadow: 0 0 15px rgba(255, 23, 34, 0.5);
+        }
+
+        /* TEXT INPUTS */
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ff1722 !important;
+            box-shadow: 0 0 0 2px rgba(255, 23, 34, 0.25);
+        }
     </style>
 </head>
-<body class="bg-os-bg text-os-text font-sans p-4 md:p-8 min-h-screen antialiased selection:bg-os-accent selection:text-white transition-colors duration-300 relative">
+<body class="bg-brand-canvas text-brand-text font-sans p-4 md:p-8 min-h-screen antialiased selection:bg-brand-accent selection:text-white transition-colors duration-500 relative overflow-x-hidden">
 
-    <canvas id="cursor-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+    <!-- GRAINY TEXTURE OVERLAY -->
+    <div class="noise-overlay"></div>
 
-    <div class="relative z-10 max-w-7xl mx-auto">
+    <!-- BACKGROUND GRAPHICS CONTAINER -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Spider-Man Artwork Base Backdrop -->
+        <div id="spiderman-bg" class="absolute inset-0 bg-[url('spiderman.png')] bg-no-repeat bg-cover bg-center opacity-[0.22] dark:opacity-[0.15] transition-opacity duration-500"></div>
+        <div class="bg-radial-vignette"></div>
         
-        <header class="flex justify-between items-center mb-6 text-xs font-mono text-os-muted uppercase tracking-widest">
-            <div>ABHI OS // V2.0</div>
-            <div class="flex items-center gap-4 hidden md:flex">
-                <span>Delhi, IN 31°C</span>
-                <span>BAT 92%</span>
-                <span>NET 140MB/S</span>
-                <button id="theme-toggle" onclick="document.documentElement.classList.toggle('dark')" class="p-1 rounded-full bg-os-card border border-os-border hover:text-os-text transition cursor-pointer">
+        <!-- Subtle Web Grid Overlay -->
+        <div class="grid-overlay"></div>
+
+        <!-- Flowing Red Splatter Blobs -->
+        <div class="absolute w-[50vw] h-[50vw] max-w-[650px] rounded-full bg-brand-accent/8 blur-[110px] -top-20 -left-20 animate-mesh1"></div>
+        <div class="absolute w-[60vw] h-[60vw] max-w-[750px] rounded-full bg-brand-accent/5 blur-[130px] bottom-10 right-10 animate-mesh2"></div>
+    </div>
+
+    <!-- INTERACTIVE WEB-BUILDER CURSOR CANVAS -->
+    <canvas id="cursor-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-50"></canvas>
+
+    <div class="relative z-10 max-w-7xl mx-auto flex flex-col gap-6">
+        
+        <!-- HEADER -->
+        <header class="flex justify-between items-center py-3 px-6 rounded-[1.5rem] bento-card text-[11.5px] font-mono text-brand-muted uppercase tracking-widest">
+            <div class="relative z-10 flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-brand-accent shadow-[0_0_12px_#ff1722] animate-pulse"></span>
+                <span class="font-bold text-brand-text">BROOKLYN_GRID // MORALES_SYS</span>
+            </div>
+            <div class="relative z-10 flex items-center gap-6">
+                <div class="hidden md:flex items-center gap-5">
+                    <span id="header-loc">DELHI, IN // 28.6° N</span>
+                    <span id="header-net">NET_EST: 220MB/S</span>
+                    <span id="header-ping">PING_RATING: 12MS</span>
+                </div>
+                <button onclick="toggleTheme()" class="p-2 rounded-xl hover:bg-brand-accent/15 hover:text-brand-accent transition cursor-pointer text-[14px]">
                     🌗
                 </button>
             </div>
         </header>
 
-        <main class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4">
+        <!-- BENTO CONTAINER GRID -->
+        <main class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-5 items-stretch">
 
-            <div class="lg:col-span-3 flex flex-col gap-4">
-                <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg">
-                    <div class="text-[10px] font-mono text-os-muted mb-4 uppercase">01 // Operator <span class="float-right text-green-500">● Online</span></div>
+            <!-- CARD 1: PROFILE & PORTFOLIO TIMELINE (LEFT-COL-SPAN-3) -->
+            <section class="lg:col-span-3 bento-card flex flex-col justify-between min-h-[500px]">
+                <div class="relative z-10 flex flex-col gap-5">
+                    <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider flex justify-between items-center border-b border-brand-border pb-3.5">
+                        <span>[01 // Operator Profile]</span>
+                        <span class="text-brand-accent font-semibold flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-ping"></span> Sync Active</span>
+                    </div>
+
+                    <!-- AVATAR DETAILS -->
                     <div class="flex items-center gap-4">
-                        <img src="https://ui-avatars.com/api/?name=Abhi&background=d96c4a&color=fff" alt="Profile" class="w-16 h-16 rounded-xl border border-os-border object-cover">
+                        <div class="relative p-0.5 rounded-2xl bg-gradient-to-tr from-brand-accent to-neutral-900 shadow-[0_0_20px_rgba(255,23,34,0.35)]">
+                            <img src="https://ui-avatars.com/api/?name=Abhinav&background=07070d&color=ff1722&bold=true&font-size=0.33" alt="Profile avatar" class="w-16 h-16 rounded-[14px] border border-brand-border object-cover">
+                        </div>
                         <div>
-                            <h2 class="text-lg font-medium text-os-text">Abhi</h2>
-                            <p class="text-xs text-os-muted font-mono mt-1">Data Science · IIT Madras</p>
+                            <h2 class="text-2xl font-display font-extrabold tracking-tight text-brand-text leading-none">Abhinav</h2>
+                            <p class="text-[10px] text-brand-muted font-mono mt-1.5">@ABHI34554-GITHUB</p>
                         </div>
                     </div>
-                    <div class="flex gap-4 mt-6 text-xs font-mono border-t border-os-border/50 pt-4">
-                        <div>
-                            <div class="text-os-muted">Focus</div>
-                            <div class="text-os-text mt-1">AI / Quant Trading</div>
-                        </div>
-                        <div>
-                            <div class="text-os-muted">Location</div>
-                            <div class="text-os-text mt-1">Delhi, IN</div>
-                        </div>
-                    </div>
-                </section>  
+
+                    <!-- IIT MADRAS EDUCATION TIMELINE -->
+                    <div class="mt-2 space-y-4">
+                        <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Academics & Journey</div>
                         
-                <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg flex-1 min-h-[300px] relative flex flex-col">
-                    <div class="text-[10px] font-mono text-os-muted mb-4 uppercase flex justify-between">
-                        <span>02 // Location</span>
-                        <span>Ping - 24ms</span>
-                    </div>
-                    <div class="flex-1 flex items-center justify-center opacity-30">
-                        <div class="w-full h-32 flex flex-wrap gap-1 justify-center items-center">
-                             <div class="w-12 h-6 rounded-full bg-os-text"></div>
-                             <div class="w-8 h-4 rounded-full bg-os-text"></div>
-                             <div class="w-16 h-8 rounded-full border border-os-text"></div>
-                             <div class="w-6 h-6 rounded-full bg-os-text relative">
-                                <div class="absolute inset-0 m-auto w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
-                             </div>
-                             <div class="w-20 h-5 rounded-full border border-os-text"></div>
-                        </div>
-                    </div>
-                    <div class="text-[10px] font-mono text-os-muted uppercase mt-auto flex justify-between pt-4 border-t border-os-border/50">
-                        <span>28.6139° N</span>
-                        <span>77.2090° E</span>
-                    </div>
-                </section>
-            </div>
-
-            <div class="lg:col-span-6 flex flex-col gap-4">
-                <section class="bg-os-card border border-os-border rounded-2xl p-6 flex justify-between items-center shadow-lg">
-                    <div>
-                        <div class="text-[10px] font-mono text-os-muted mb-2 uppercase">03 // Session</div>
-                        <h1 class="text-3xl md:text-4xl font-serif text-os-text tracking-wide">Good <span class="italic text-os-muted" id="greeting-display">day</span>, Abhi.</h1>
-                        <p id="date-display" class="text-[10px] md:text-xs font-mono text-os-muted mt-3 uppercase tracking-wider">Loading date...</p>
-                    </div>
-                    <div class="text-right hidden sm:block">
-                        <div class="text-[10px] font-mono text-os-muted mb-2 uppercase">Local Time</div>
-                        <div id="time-display" class="text-5xl font-mono text-os-text flex items-baseline gap-1">
-                            00 <span class="text-os-muted animate-pulse">:</span> 00
-                        </div>
-                    </div>
-                </section>
-                
-                <section class="bg-os-card border border-os-border rounded-2xl p-6 shadow-lg flex-1">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="text-[10px] font-mono text-os-muted uppercase">04 // Calendar</div>
-                        <div class="text-[10px] font-mono text-os-muted uppercase">Apr 2026</div>
-                    </div>
-                    
-                    <h2 class="text-2xl font-serif text-os-text mb-6">Sunday, <span class="italic">April 19</span></h2>
-                    
-                    <div class="flex justify-between gap-2 mb-8">
-                        <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Fri</span><span class="text-sm font-medium">17</span></div>
-                        <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Sat</span><span class="text-sm font-medium">18</span></div>
-                        <div class="flex flex-col items-center bg-os-text text-os-bg border border-os-text rounded-lg py-2 px-3 flex-1 text-center shadow-lg"><span class="text-[10px] font-mono mb-1">Sun</span><span class="text-sm font-bold">19</span></div>
-                        <div class="flex flex-col items-center bg-os-bg border border-os-border rounded-lg py-2 px-3 flex-1 text-center opacity-50"><span class="text-[10px] font-mono text-os-muted mb-1">Mon</span><span class="text-sm font-medium">20</span></div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="flex gap-4 items-start relative pb-4 border-b border-os-border">
-                            <div class="w-12 text-[10px] font-mono text-os-accent mt-1">NOW</div>
-                            <div><div class="text-sm font-medium text-os-text">Data Science Prep</div><div class="text-xs text-os-muted mt-1">Deep work session</div></div>
-                            <div class="w-2 h-2 rounded-full bg-os-accent absolute right-0 top-2"></div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="text-[10px] font-mono text-os-muted uppercase">05 // Inbox</div>
-                        <div class="text-[10px] font-mono text-os-muted uppercase">1 Unread</div>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="bg-os-bg border border-os-border rounded-xl p-3 flex gap-3 items-center">
-                            <div class="w-8 h-8 rounded-full bg-os-accent text-white flex items-center justify-center text-xs font-bold">GH</div>
-                            <div class="flex-1 overflow-hidden">
-                                <div class="text-xs font-medium text-os-text flex justify-between"><span>GitHub Pages</span><span class="text-os-muted text-[10px]">Just now</span></div>
-                                <div class="text-[10px] text-os-muted truncate mt-0.5">Deployment successful! Welcome online.</div>
+                        <div class="relative border-l-2 border-brand-border/40 pl-4 ml-1.5 space-y-4.5 text-xs">
+                            <!-- YEAR 1 -->
+                            <div class="relative">
+                                <span class="absolute -left-[23px] top-1 w-3.5 h-3.5 rounded-full bg-brand-accent border-2 border-brand-canvas shadow-[0_0_8px_#ff1722]"></span>
+                                <div class="font-display font-semibold text-brand-text">Year 1: BS Data Science</div>
+                                <div class="text-[11px] text-brand-muted">IIT Madras · 2025 - 2026</div>
+                                <span class="text-[9px] font-mono text-brand-accent bg-brand-accent/15 px-1.5 py-0.5 rounded mt-1.5 inline-block font-bold">Active Phase</span>
+                            </div>
+                            <!-- YEAR 2 -->
+                            <div class="relative opacity-40">
+                                <span class="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-brand-muted border border-brand-canvas"></span>
+                                <div class="font-display font-semibold">Year 2: Applied Stats</div>
+                                <div class="text-[11px] text-brand-muted">IIT Madras · 2026 - 2027</div>
+                            </div>
+                            <!-- YEAR 3 -->
+                            <div class="relative opacity-40">
+                                <span class="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-brand-muted border border-brand-canvas"></span>
+                                <div class="font-display font-semibold">Year 3: Advanced ML Models</div>
+                                <div class="text-[11px] text-brand-muted">IIT Madras · 2027 - 2028</div>
+                            </div>
+                            <!-- YEAR 4 -->
+                            <div class="relative opacity-40">
+                                <span class="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-brand-muted border border-brand-canvas"></span>
+                                <div class="font-display font-semibold">Year 4: Capstone & Quant</div>
+                                <div class="text-[11px] text-brand-muted">IIT Madras · Graduation 2029</div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="relative z-10 pt-4 border-t border-brand-border mt-6">
+                    <a href="https://github.com/ABHI34554-GITHUB" target="_blank" class="w-full py-3 px-4 rounded-xl bg-brand-accent text-white hover:scale-[1.02] active:scale-[0.98] transition font-display font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-accent/20">
+                        <svg class="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        Terminal Operator Profile
+                    </a>
+                </div>
+            </section>
+
+            <!-- MIDDLE COLUMN (GRID-SPAN-6) -->
+            <div class="lg:col-span-6 flex flex-col gap-5">
+                
+                <!-- GREETING & LARGE SYSTEM CLOCK -->
+                <section class="bento-card flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+                    <div class="absolute w-[220px] h-[220px] rounded-full bg-brand-accent/10 blur-[50px] -right-16 -top-16 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-ping"></span> Brooklyn Web Protocol
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-display font-extrabold tracking-tight text-brand-text mt-2 leading-none">
+                            Good <span class="italic font-normal text-brand-accent glow-accent" id="greeting-display">day</span>, Abhinav.
+                        </h1>
+                        <p id="date-display" class="text-[10px] font-mono text-brand-muted mt-3 uppercase tracking-widest">Loading Spidey Diagnostics...</p>
+                    </div>
+                    <div class="relative z-10 md:text-right border-l-2 md:border-l-0 md:border-r-2 border-brand-border pl-4 md:pl-0 pr-4">
+                        <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Local Standard Time</div>
+                        <div id="time-display" class="text-4xl md:text-5xl font-mono font-bold text-brand-text tracking-tighter mt-1 flex items-baseline gap-1">
+                            00<span class="text-brand-accent animate-pulse font-normal">:</span>00
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    
+                    <!-- NEON POMODORO TIMER -->
+                    <section class="bento-card flex flex-col items-center justify-between min-h-[310px]">
+                        <div class="w-full flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-2.5 mb-2 relative z-10">
+                            <span>[04 // Web-Focus Engine]</span>
+                            <span id="pomo-mode" class="text-brand-accent font-bold tracking-widest glow-accent">FOCUS</span>
+                        </div>
+                        
+                        <div class="relative w-36 h-36 flex items-center justify-center my-3 z-10">
+                            <!-- SVG COUNTDOWN CIRCLE -->
+                            <svg class="absolute w-full h-full transform -rotate-90">
+                                <circle class="text-brand-border" stroke-width="6.5" stroke="currentColor" fill="transparent" r="64" cx="72" cy="72"/>
+                                <circle id="pomo-circle" class="text-brand-accent progress-ring__circle" stroke-width="6.5" stroke-dasharray="402" stroke-dashoffset="0" stroke-linecap="round" stroke="currentColor" fill="transparent" r="64" cx="72" cy="72" style="filter: drop-shadow(0 0 6px rgba(255, 23, 34, 0.6));"/>
+                            </svg>
+                            <div class="text-center z-10">
+                                <div id="pomo-time" class="text-3xl font-mono font-bold tracking-tight text-brand-text">25:00</div>
+                                <div class="text-[8px] font-mono text-brand-muted uppercase tracking-widest mt-1">Countdown</div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3.5 w-full relative z-10">
+                            <button id="pomo-toggle" onclick="togglePomodoro()" class="flex-1 py-2.5 px-4 rounded-xl bg-brand-accent text-white hover:bg-brand-accent/90 transition text-xs font-bold shadow-lg shadow-brand-accent/25 cursor-pointer hover:scale-[1.02] active:scale-[0.98]">
+                                Start Focus
+                            </button>
+                            <button onclick="resetPomodoro()" class="p-2.5 rounded-xl border border-brand-border hover:border-brand-accent hover:text-brand-accent transition text-xs font-mono cursor-pointer" title="Reset Session">
+                                ↺
+                            </button>
+                            <button onclick="switchPomodoroMode()" class="p-2.5 rounded-xl border border-brand-border hover:border-brand-accent hover:text-brand-accent transition text-[10px] font-bold uppercase tracking-wider cursor-pointer">
+                                Break
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- SPOTIFY DEEP GLASS AUDIO DECK -->
+                    <section class="bento-card flex flex-col justify-between min-h-[310px] overflow-hidden">
+                        <div class="flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-2.5 mb-2 relative z-10">
+                            <span>[05 // Spider Beats]</span>
+                            <span class="flex items-center gap-1 text-[9px] text-[#1db954] font-bold uppercase">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.59 17.31c-.22.36-.68.48-1.04.26-2.9-1.77-6.55-2.17-10.85-1.19-.41.09-.82-.16-.91-.57-.09-.41.16-.82.57-.91 4.7-1.07 8.73-.61 11.97 1.37.36.22.48.68.26 1.04zm1.49-3.26c-.27.45-.86.59-1.31.32-3.32-2.04-8.38-2.63-12.3-1.44-.51.15-1.05-.14-1.2-.66-.15-.51.14-1.05.66-1.2 4.47-1.36 10.05-.7 13.83 1.62.45.27.6 85.01.32 1.31zm.11-3.39c-3.98-2.36-10.55-2.58-14.37-1.42-.61.18-1.25-.17-1.43-.78-.18-.61.17-1.25.78-1.43 4.38-1.33 11.62-1.07 16.2 1.65.55.32.73 1.03.41 1.58-.32.55-1.03.73-1.59.4z"/></svg>
+                                Active
+                            </span>
+                        </div>
+
+                        <!-- TRACK LAYOUT -->
+                        <div class="flex items-center gap-4 my-1.5 relative z-10">
+                            <!-- Spinning Vinyl Disc -->
+                            <div id="vinyl-disc" class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-accent via-red-950 to-black flex items-center justify-center shadow-lg relative border border-brand-border transition-all duration-700">
+                                <div class="w-4 h-4 rounded-full bg-brand-canvas border border-brand-border animate-ping" style="animation-duration: 2s;"></div>
+                            </div>
+                            <div class="overflow-hidden">
+                                <div id="track-name" class="font-display font-extrabold text-sm truncate text-brand-text">Whats Up Danger (Lofi)</div>
+                                <div id="track-artist" class="text-[9px] font-mono text-brand-muted mt-1 uppercase tracking-widest truncate">Brooklyn Horizon</div>
+                            </div>
+                        </div>
+
+                        <!-- CANVAS SOUND WAVE VISUALIZER -->
+                        <div class="h-9 w-full relative flex items-end justify-center gap-[2.5px] overflow-hidden my-1 z-10 bg-brand-canvas/30 rounded-xl p-1 border border-brand-border/40">
+                            <canvas id="audio-wave-canvas" class="w-full h-full"></canvas>
+                        </div>
+
+                        <!-- SOUND DECK CONTROL -->
+                        <div class="flex flex-col gap-2.5 relative z-10">
+                            <div class="flex items-center justify-between text-[8px] font-mono text-brand-muted">
+                                <span id="audio-current">0:00</span>
+                                <span id="audio-total">0:00</span>
+                            </div>
+                            
+                            <audio id="dashboard-audio" crossorigin="anonymous" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"></audio>
+
+                            <div class="flex items-center justify-center gap-5">
+                                <button onclick="prevTrack()" class="p-1 text-brand-muted hover:text-brand-accent transition text-[13px] cursor-pointer">⏮</button>
+                                <button id="play-pause-btn" onclick="toggleAudio()" class="w-9.5 h-9.5 rounded-full bg-brand-text text-brand-canvas hover:scale-105 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md">▶</button>
+                                <button onclick="nextTrack()" class="p-1 text-brand-muted hover:text-brand-accent transition text-[13px] cursor-pointer">⏭</button>
+                            </div>
+
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[9px] opacity-75">🔈</span>
+                                <input id="volume-slider" type="range" min="0" max="1" step="0.05" value="0.7" oninput="adjustVolume(this.value)" class="w-full h-1 bg-brand-border rounded-lg appearance-none cursor-pointer accent-brand-accent">
+                                <span class="text-[9px] opacity-75">🔊</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- BENTO NEWS CHANGELOG GRID (TC AI RSS FEED) -->
+                <section class="bento-card flex flex-col gap-4">
+                    <div class="flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-3 relative z-10">
+                        <span>[06 // Web-Sensors AI Stream]</span>
+                        <span class="flex items-center gap-1 text-[9px] text-brand-accent font-bold uppercase tracking-widest"><span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-ping"></span> Live Diagnostics</span>
+                    </div>
+
+                    <!-- SCROLLABLE LIST -->
+                    <div id="news-container" class="custom-scroll space-y-3.5 max-h-[250px] overflow-y-auto pr-1 relative z-10">
+                        <div class="flex flex-col items-center justify-center py-10 gap-3 text-brand-muted">
+                            <svg class="animate-spin w-6 h-6 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <span class="text-[10px] font-mono uppercase tracking-widest">SENSORS CONNECTING...</span>
+                        </div>
+                    </div>
                 </section>
             </div>
 
-            <div class="lg:col-span-3 flex flex-col gap-4">
-                <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg">
-                    <div class="text-[10px] font-mono text-os-muted mb-4 uppercase flex justify-between"><span>06 // Vitals</span><span>Live</span></div>
-                    <div class="mb-6">
-                        <div class="flex items-end justify-between">
-                            <div><div class="text-4xl font-serif text-os-text">7,842</div><div class="text-[10px] font-mono text-os-muted uppercase mt-1">Today</div></div>
-                            <div class="text-right"><div class="text-xs font-mono text-os-muted">Steps</div><div class="text-[10px] font-mono text-os-accent mt-1">▲ 18%</div></div>
-                        </div>
+            <!-- COLUMN 3: TERMINAL & NOTION (RIGHT-COL-SPAN-3) -->
+            <div class="lg:col-span-3 flex flex-col gap-5">
+                
+                <!-- NOTION SCRATCHPAD -->
+                <section class="bento-card flex flex-col gap-4 min-h-[240px]">
+                    <div class="flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-3 relative z-10">
+                        <span>[07 // Web-Pad Notes]</span>
+                        <button onclick="openNotionModal()" class="p-1 rounded hover:bg-brand-accent/15 hover:text-brand-accent transition text-xs cursor-pointer" title="Configure Keys">
+                            ⚙️
+                        </button>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-os-bg p-3 rounded-xl border border-os-border">
-                            <div class="text-[10px] font-mono text-os-muted uppercase">Heart</div>
-                            <div class="text-lg text-os-text mt-1">72 <span class="text-xs text-os-muted">bpm</span></div>
-                        </div>
-                        <div class="bg-os-bg p-3 rounded-xl border border-os-border">
-                            <div class="text-[10px] font-mono text-os-muted uppercase">Sleep</div>
-                            <div class="text-lg text-os-text mt-1">7.4 <span class="text-xs text-os-muted">hrs</span></div>
-                        </div>
+
+                    <!-- TEXTAREA -->
+                    <div class="flex-1 flex flex-col relative z-10">
+                        <textarea id="notion-notes" oninput="saveNoteLocally()" class="flex-1 w-full bg-brand-canvas/30 border border-brand-border rounded-2xl p-3.5 text-xs resize-none placeholder-brand-muted/70 leading-relaxed font-sans" placeholder="Jot web notes down here... Sync will dispatch straight to your Notion Database."></textarea>
                     </div>
+
+                    <button onclick="syncToNotion()" class="relative z-10 py-3 px-4 rounded-xl bg-brand-accent hover:bg-red-700 text-white font-display font-extrabold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-accent/15 hover:scale-[1.02] active:scale-[0.98]">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M4.586 1.836A3 3 0 0 1 7.414 0h9.172a3 3 0 0 1 2.828 1.836l3.586 10A3 3 0 0 1 20.172 15H3.828a3 3 0 0 1-2.828-3.164l3.586-10zM12 4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-4.5 9h9a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 21v-6a1.5 1.5 0 0 1 1.5-1.5z"/></svg>
+                        Dispatch Note to Notion
+                    </button>
                 </section>
 
-                <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg">
-                    <div class="text-[10px] font-mono text-os-muted mb-4 uppercase flex justify-between"><span>07 // Now Playing</span><span>Vinyl</span></div>
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded bg-gradient-to-br from-os-accent to-orange-900 flex items-center justify-center shadow-lg"><div class="w-3 h-3 rounded-full bg-os-card"></div></div>
-                        <div>
-                            <div class="text-sm font-serif text-os-text italic">Harvest Moon</div>
-                            <div class="text-[10px] font-mono text-os-muted mt-1 uppercase">Neil Young</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1 h-6 mb-2">
-                        <div class="w-1 h-2 bg-os-muted rounded"></div><div class="w-1 h-4 bg-os-muted rounded"></div><div class="w-1 h-6 bg-os-text rounded"></div><div class="w-1 h-3 bg-os-muted rounded"></div><div class="w-1 h-5 bg-os-muted rounded"></div><div class="w-1 h-2 bg-os-muted rounded"></div>
-                    </div>
-                    <div class="flex justify-between text-[10px] font-mono text-os-muted"><span>1:42</span><span>5:03</span></div>
-                </section>
-
-                <section class="bg-os-card border border-os-border rounded-2xl p-5 shadow-lg flex-1">
-                    <div class="text-[10px] font-mono text-os-muted mb-4 uppercase flex justify-between"><span>08 // Project</span><span>Phase 1</span></div>
-                    <h3 class="text-sm font-medium text-os-text">MoneyWise App</h3>
-                    <p class="text-[10px] font-mono text-os-muted mt-1 mb-4 uppercase">Gamified Finance Web App</p>
-                    
-                    <div class="flex justify-between text-[10px] font-mono text-os-text mb-2"><span>Build Progress</span><span>15%</span></div>
-                    <div class="w-full h-1 bg-os-bg rounded-full mb-6 overflow-hidden">
-                        <div class="h-full bg-os-accent w-[15%]"></div>
+                <!-- CONSOLE TERMINAL -->
+                <section class="bento-card flex flex-col justify-between min-h-[300px] flex-1 font-mono">
+                    <div class="w-full flex justify-between items-center text-[10px] text-brand-muted uppercase tracking-wider border-b border-brand-border pb-3 mb-2.5 relative z-10">
+                        <span>[08 // Web-CLI Console]</span>
+                        <span class="text-brand-accent font-bold glow-accent animate-pulse">ACTIVE</span>
                     </div>
 
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" checked class="accent-os-accent w-3 h-3 bg-os-bg border-os-border">
-                            <span class="text-xs text-os-muted line-through">Repo Architecture</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" class="accent-os-accent w-3 h-3 bg-os-bg border-os-border">
-                            <span class="text-xs text-os-text">Frontend Dashboard UI</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" class="accent-os-accent w-3 h-3 bg-os-bg border-os-border">
-                            <span class="text-xs text-os-text">Gamification Logic</span>
-                        </label>
+                    <!-- CONSOLE LOG -->
+                    <div id="terminal-log" class="custom-scroll flex-1 text-[11px] leading-relaxed text-brand-muted overflow-y-auto max-h-[220px] mb-3 space-y-2 pr-1 relative z-10">
+                        <div class="text-[10px] text-brand-accent">SPIDEY_NET ACTIVE. Type <span class="font-bold">/help</span> for console guidelines.</div>
+                        <div class="text-brand-text">abhinav@morales:~$ web-sync</div>
+                        <div>Brooklyn core active. Deploy terminal prompts to trigger widget parameters.</div>
                     </div>
+
+                    <!-- PROMPT -->
+                    <form onsubmit="handleTerminalCommand(event)" class="relative z-10 flex items-center gap-1.5 border-t border-brand-border pt-4">
+                        <span class="text-brand-accent text-[11.5px] font-bold">~</span>
+                        <input id="terminal-input" type="text" autocomplete="off" class="flex-1 bg-transparent border-none text-[11.5px] text-brand-text focus:ring-0 focus:outline-none p-0" placeholder="run diagnostics...">
+                    </form>
                 </section>
             </div>
 
         </main>
     </div>
 
+    <!-- NOTION CONFIGURATION MODAL -->
+    <div id="notion-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bento-card max-w-md w-full mx-4 rounded-3xl p-6 border border-brand-border flex flex-col gap-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-brand-border pb-3.5">
+                <h3 class="font-display font-extrabold text-base text-brand-text">Notion Integration Key</h3>
+                <button onclick="closeNotionModal()" class="text-brand-muted hover:text-brand-text transition text-[15px] cursor-pointer">✕</button>
+            </div>
+            
+            <p class="text-xs text-brand-muted leading-relaxed">
+                Connect your scratchpad notes directly to a Notion Database page. Tokens will be cached strictly inside your local browser memory space.
+            </p>
+
+            <div class="space-y-4 my-2.5 text-xs">
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-mono text-[10px] text-brand-muted uppercase">Internal Integration Token</label>
+                    <input id="notion-token" type="password" class="w-full bg-brand-canvas/50 border border-brand-border rounded-xl p-3 font-mono text-[11px]" placeholder="secret_...">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-mono text-[10px] text-brand-muted uppercase">Database ID Code</label>
+                    <input id="notion-db-id" type="text" class="w-full bg-brand-canvas/50 border border-brand-border rounded-xl p-3 font-mono text-[11px]" placeholder="e.g. 9b128...">
+                </div>
+            </div>
+
+            <div class="flex gap-3 justify-end pt-3 border-t border-brand-border">
+                <button onclick="closeNotionModal()" class="py-2 px-4.5 rounded-xl border border-brand-border hover:bg-brand-border/10 transition text-xs font-semibold cursor-pointer">
+                    Cancel
+                </button>
+                <button onclick="saveNotionConfig()" class="py-2 px-4.5 rounded-xl bg-brand-accent text-white hover:bg-brand-accent/90 transition text-xs font-extrabold shadow-lg shadow-brand-accent/20 cursor-pointer">
+                    Save Key
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM ENGINE -->
     <script>
-        // --- 1. CLOCK LOGIC ---
+        // --- 1. SPOTLIGHT MOUSE TRACKING OVERLAY (LINEAR STYLE) ---
+        function initSpotlights() {
+            document.querySelectorAll('.bento-card').forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+        }
+        initSpotlights();
+
+        // --- 2. DARK & LIGHT MODE TOGGLES ---
+        function toggleTheme() {
+            const body = document.body;
+            const bgImage = document.getElementById('spiderman-bg');
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                document.documentElement.classList.add('dark');
+                if (bgImage) bgImage.style.opacity = '0.15';
+            } else {
+                body.classList.add('light-theme');
+                document.documentElement.classList.remove('dark');
+                if (bgImage) bgImage.style.opacity = '0.38';
+            }
+        }
+        // Force dark default
+        document.documentElement.classList.add('dark');
+
+        // --- 3. SYSTEM DISPLAY CLOCK ---
         function updateClock() {
             const now = new Date();
             let hours = now.getHours().toString().padStart(2, '0');
@@ -256,19 +540,25 @@
             if (currentHour < 12) greeting = "morning";
             else if (currentHour < 17) greeting = "afternoon";
 
-            document.getElementById('time-display').innerHTML = `${hours} <span class="text-os-muted animate-pulse">:</span> ${minutes}`;
+            document.getElementById('time-display').innerHTML = `${hours}<span class="text-brand-accent animate-pulse font-normal">:</span>${minutes}`;
             document.getElementById('date-display').innerText = dateString;
             document.getElementById('greeting-display').innerText = greeting;
+            
+            if (Math.random() > 0.8) {
+                const net = 210 + Math.floor(Math.random() * 40);
+                const ping = 10 + Math.floor(Math.random() * 5);
+                document.getElementById('header-net').innerText = `NET_EST: ${net}MB/S`;
+                document.getElementById('header-ping').innerText = `PING_RATING: ${ping}MS`;
+            }
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // --- 2. INTERACTIVE CURSOR PARTICLES ---
+        // --- 4. GLOWING SPIDER-WEB CURSOR ENGINE ---
         const canvas = document.getElementById('cursor-canvas');
         const ctx = canvas.getContext('2d');
         let particlesArray = [];
         
-        // Resize canvas to fill window
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -279,77 +569,623 @@
         const mouse = { x: null, y: null, dx: 0, dy: 0 };
 
         window.addEventListener('mousemove', (event) => {
-            // Calculate mouse speed/direction for the "strips"
             mouse.dx = event.x - mouse.x;
             mouse.dy = event.y - mouse.y;
             mouse.x = event.x;
             mouse.y = event.y;
             
-            const isDark = document.documentElement.classList.contains('dark');
-            
-            // Add 2 particles every time mouse moves
-            for (let i = 0; i < 2; i++) {
-                particlesArray.push(new Particle(mouse.x, mouse.y, mouse.dx, mouse.dy, isDark));
+            // Spawn web-anchor nodes
+            if (particlesArray.length < 40) {
+                particlesArray.push(new Particle(mouse.x, mouse.y, mouse.dx, mouse.dy));
             }
         });
 
         class Particle {
-            constructor(x, y, dx, dy, isDark) {
+            constructor(x, y, dx, dy) {
                 this.x = x;
                 this.y = y;
-                this.isDark = isDark;
-                this.size = Math.random() * 3 + 1; // Random size
-                this.speedX = (Math.random() * 2 - 1) + (dx * 0.05); // Drift + mouse speed
-                this.speedY = (Math.random() * 2 - 1) + (dy * 0.05);
-                this.life = 1; // Opacity/Life starts at 100%
+                this.size = Math.random() * 2 + 1.5; 
+                this.speedX = (Math.random() * 1.0 - 0.5) + (dx * 0.05); 
+                this.speedY = (Math.random() * 1.0 - 0.5) + (dy * 0.05);
+                this.life = 1.0; 
+                this.decay = Math.random() * 0.015 + 0.01;
             }
             
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                this.life -= 0.03; // Fade out speed
-                if (this.size > 0.1) this.size -= 0.05; // Shrink speed
+                // Add tiny drag/friction
+                this.speedX *= 0.98;
+                this.speedY *= 0.98;
+                this.life -= this.decay;
+                if (this.size > 0.2) this.size -= 0.02;
             }
             
             draw() {
                 ctx.globalAlpha = Math.max(this.life, 0);
-                if (this.isDark) {
-                    // DARK MODE: Glowing White Shrinking Dots
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                } else {
-                    // LIGHT MODE: Black/Red Speed Strips
-                    // 50% chance of being dark brown/black or the red accent color
-                    const color = Math.random() > 0.5 ? '#1c1a17' : '#d96c4a'; 
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = this.size;
-                    ctx.lineCap = 'round';
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    // Draw line opposite to the direction of movement to create a streak
-                    ctx.lineTo(this.x - (this.speedX * 4), this.y - (this.speedY * 4)); 
-                    ctx.stroke();
+                ctx.fillStyle = '#ff1722';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function drawSpiderWeb() {
+            // Draw connecting web-threads between nodes
+            for (let i = 0; i < particlesArray.length; i++) {
+                for (let j = i + 1; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // Connect if close enough (creates web structure)
+                    if (dist < 85) {
+                        const alpha = 0.22 * (1 - dist / 85) * Math.min(particlesArray[i].life, particlesArray[j].life);
+                        ctx.strokeStyle = `rgba(255, 23, 34, ${alpha})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
                 }
-                ctx.globalAlpha = 1; // Reset alpha
             }
         }
 
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Render anchors
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
                 particlesArray[i].draw();
-                // Remove dead particles so the browser doesn't crash
-                if (particlesArray[i].life <= 0 || particlesArray[i].size <= 0.1) {
+                if (particlesArray[i].life <= 0 || particlesArray[i].size <= 0.2) {
                     particlesArray.splice(i, 1);
                     i--;
                 }
             }
+            // Interlace webs
+            drawSpiderWeb();
             requestAnimationFrame(animateParticles);
         }
         animateParticles();
+
+        // --- 5. POMODORO SYSTEM (WEB AUDIO SYNTH INCLUDED) ---
+        let pomoInterval;
+        let pomoMinutes = 25;
+        let pomoSeconds = 0;
+        let isPomoRunning = false;
+        let currentPomoMode = 'Focus'; 
+
+        const pomoCircle = document.getElementById('pomo-circle');
+        const pomoTimeDisplay = document.getElementById('pomo-time');
+        const pomoModeDisplay = document.getElementById('pomo-mode');
+        const pomoToggleBtn = document.getElementById('pomo-toggle');
+
+        function triggerBuzzer() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                const playChime = (freq, start, duration) => {
+                    const osc = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    
+                    gainNode.gain.setValueAtTime(0.2, start);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, start + duration);
+                    
+                    osc.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    osc.start(start);
+                    osc.stop(start + duration);
+                };
+                
+                playChime(659.25, audioCtx.currentTime, 0.3); // E5 (Chime 1)
+                playChime(987.77, audioCtx.currentTime + 0.12, 0.45); // B5 (Chime 2)
+            } catch (e) {
+                console.error("Synthesizer blocked:", e);
+            }
+        }
+
+        function setPomoProgress(percent) {
+            const radius = 64;
+            const circumference = 2 * Math.PI * radius; 
+            const offset = circumference - (percent / 100) * circumference;
+            pomoCircle.style.strokeDashoffset = offset;
+        }
+
+        function updatePomoDisplay() {
+            let m = pomoMinutes.toString().padStart(2, '0');
+            let s = pomoSeconds.toString().padStart(2, '0');
+            pomoTimeDisplay.innerText = `${m}:${s}`;
+            
+            let totalSecs = currentPomoMode === 'Focus' ? 25 * 60 : 5 * 60;
+            let currentSecs = pomoMinutes * 60 + pomoSeconds;
+            let percentage = (currentSecs / totalSecs) * 100;
+            setPomoProgress(percentage);
+        }
+
+        function togglePomodoro() {
+            if (isPomoRunning) {
+                clearInterval(pomoInterval);
+                isPomoRunning = false;
+                pomoToggleBtn.innerText = "Resume Session";
+                pomoToggleBtn.classList.remove('bg-red-700');
+                pomoToggleBtn.classList.add('bg-brand-accent');
+            } else {
+                isPomoRunning = true;
+                pomoToggleBtn.innerText = "Pause Session";
+                pomoToggleBtn.classList.remove('bg-brand-accent');
+                pomoToggleBtn.classList.add('bg-red-700');
+                
+                pomoInterval = setInterval(() => {
+                    if (pomoSeconds === 0) {
+                        if (pomoMinutes === 0) {
+                            clearInterval(pomoInterval);
+                            triggerBuzzer();
+                            setTimeout(() => {
+                                alert(`${currentPomoMode} cycle completed!`);
+                                switchPomodoroMode();
+                            }, 50);
+                            return;
+                        }
+                        pomoMinutes--;
+                        pomoSeconds = 59;
+                    } else {
+                        pomoSeconds--;
+                    }
+                    updatePomoDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetPomodoro() {
+            clearInterval(pomoInterval);
+            isPomoRunning = false;
+            pomoMinutes = currentPomoMode === 'Focus' ? 25 : 5;
+            pomoSeconds = 0;
+            pomoToggleBtn.innerText = `Start ${currentPomoMode}`;
+            pomoToggleBtn.classList.remove('bg-red-700');
+            pomoToggleBtn.classList.add('bg-brand-accent');
+            updatePomoDisplay();
+        }
+
+        function switchPomodoroMode() {
+            clearInterval(pomoInterval);
+            isPomoRunning = false;
+            if (currentPomoMode === 'Focus') {
+                currentPomoMode = 'Break';
+                pomoMinutes = 5;
+                pomoModeDisplay.innerText = "BREAK";
+                pomoModeDisplay.className = "text-indigo-400 font-bold tracking-widest";
+                pomoCircle.classList.remove('text-brand-accent');
+                pomoCircle.classList.add('text-indigo-400');
+                pomoCircle.style.filter = "drop-shadow(0 0 5px rgba(99, 102, 241, 0.5))";
+            } else {
+                currentPomoMode = 'Focus';
+                pomoMinutes = 25;
+                pomoModeDisplay.innerText = "FOCUS";
+                pomoModeDisplay.className = "text-brand-accent font-bold tracking-widest glow-accent";
+                pomoCircle.classList.remove('text-indigo-400');
+                pomoCircle.classList.add('text-brand-accent');
+                pomoCircle.style.filter = "drop-shadow(0 0 5px rgba(255, 23, 34, 0.5))";
+            }
+            pomoSeconds = 0;
+            pomoToggleBtn.innerText = `Start ${currentPomoMode}`;
+            pomoToggleBtn.classList.remove('bg-red-700');
+            pomoToggleBtn.classList.add('bg-brand-accent');
+            updatePomoDisplay();
+        }
+        updatePomoDisplay();
+
+        // --- 6. SPIDER-VERSE AUDIO WIDGET & VISUALIZER ---
+        const audio = document.getElementById('dashboard-audio');
+        const playBtn = document.getElementById('play-pause-btn');
+        const vinyl = document.getElementById('vinyl-disc');
+        const waveCanvas = document.getElementById('audio-wave-canvas');
+        const waveCtx = waveCanvas.getContext('2d');
+        
+        let waveInterval;
+        let activeWaveBars = [];
+
+        const playlist = [
+            { name: "Whats Up Danger (Lofi Chill)", artist: "Brooklyn Horizon", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+            { name: "Sunflower Study Beats", artist: "Morales Sound Lab", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+            { name: "Spider-Verse Coding Flow", artist: "Alchemax Ambient Beats", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" }
+        ];
+        let currentTrackIdx = 0;
+
+        function resizeWaveCanvas() {
+            waveCanvas.width = waveCanvas.parentElement.clientWidth;
+            waveCanvas.height = waveCanvas.parentElement.clientHeight;
+            
+            activeWaveBars = [];
+            const barCount = Math.floor(waveCanvas.width / 5.5);
+            for (let i = 0; i < barCount; i++) {
+                activeWaveBars.push({
+                    x: i * 5.5,
+                    targetH: 2,
+                    currentH: 2,
+                    speed: 0.08 + Math.random() * 0.12
+                });
+            }
+        }
+        window.addEventListener('resize', resizeWaveCanvas);
+        resizeWaveCanvas();
+
+        function loadTrack(idx) {
+            audio.src = playlist[idx].src;
+            document.getElementById('track-name').innerText = playlist[idx].name;
+            document.getElementById('track-artist').innerText = playlist[idx].artist;
+            audio.load();
+            if (isAudioPlaying) {
+                audio.play();
+            }
+        }
+
+        let isAudioPlaying = false;
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                isAudioPlaying = true;
+                playBtn.innerText = "⏸";
+                vinyl.classList.add('animate-spin');
+                vinyl.classList.remove('rounded-2xl');
+                vinyl.classList.add('rounded-full');
+                startWaveAnimation();
+            } else {
+                audio.pause();
+                isAudioPlaying = false;
+                playBtn.innerText = "▶";
+                vinyl.classList.remove('animate-spin');
+                vinyl.classList.remove('rounded-full');
+                vinyl.classList.add('rounded-2xl');
+                stopWaveAnimation();
+            }
+        }
+
+        function adjustVolume(val) {
+            audio.volume = val;
+        }
+
+        function prevTrack() {
+            currentTrackIdx = (currentTrackIdx - 1 + playlist.length) % playlist.length;
+            loadTrack(currentTrackIdx);
+        }
+
+        function nextTrack() {
+            currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
+            loadTrack(currentTrackIdx);
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            const cur = audio.currentTime;
+            const dur = audio.duration || 0;
+            
+            let curMin = Math.floor(cur / 60).toString();
+            let curSec = Math.floor(cur % 60).toString().padStart(2, '0');
+            let durMin = Math.floor(dur / 60).toString();
+            let durSec = Math.floor(dur % 60).toString().padStart(2, '0');
+            
+            document.getElementById('audio-current').innerText = `${curMin}:${curSec}`;
+            document.getElementById('audio-total').innerText = `${durMin}:${durSec}`;
+        });
+
+        audio.addEventListener('ended', () => {
+            nextTrack();
+        });
+
+        function startWaveAnimation() {
+            if (waveInterval) cancelAnimationFrame(waveInterval);
+            
+            function render() {
+                waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+                
+                const isLight = document.body.classList.contains('light-theme');
+                waveCtx.fillStyle = '#ff1722';
+
+                activeWaveBars.forEach(bar => {
+                    if (isAudioPlaying) {
+                        bar.targetH = 2 + Math.floor(Math.random() * (waveCanvas.height - 4));
+                    } else {
+                        bar.targetH = 2;
+                    }
+                    bar.currentH += (bar.targetH - bar.currentH) * bar.speed;
+                    
+                    waveCtx.beginPath();
+                    waveCtx.roundRect(bar.x, waveCanvas.height - bar.currentH, 3.5, bar.currentH, 2.5);
+                    waveCtx.fill();
+                });
+
+                waveInterval = requestAnimationFrame(render);
+            }
+            render();
+        }
+
+        function stopWaveAnimation() {
+            startWaveAnimation();
+        }
+        stopWaveAnimation();
+
+        // --- 7. DYNAMIC RSS FEED OVERHAUL ---
+        async function fetchAINews() {
+            const newsContainer = document.getElementById('news-container');
+            const rssUrl = "https://techcrunch.com/category/artificial-intelligence/feed/";
+            const fetchUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+            
+            try {
+                const response = await fetch(fetchUrl);
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    newsContainer.innerHTML = '';
+                    const items = data.items.slice(0, 4);
+                    
+                    const tags = ['SENSORS_ACTIVE', 'WEB_GRID_LINK', 'PORTAL_ESTABLISHED', 'ALCHEMAX_UPDATE'];
+
+                    items.forEach((item, index) => {
+                        const date = new Date(item.pubDate);
+                        const timeStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + " · " + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                        
+                        const tag = tags[index % tags.length];
+                        
+                        const newsEl = document.createElement('a');
+                        newsEl.href = item.link;
+                        newsEl.target = "_blank";
+                        newsEl.className = "bento-card block p-5 rounded-2xl flex flex-col gap-2.5 transition border border-brand-border hover:border-brand-accent/25 hover:bg-brand-accent/5";
+                        newsEl.innerHTML = `
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="text-[9px] font-mono text-brand-accent font-bold tracking-widest bg-brand-accent/15 px-2 py-0.5 rounded uppercase">${tag}</span>
+                                <span class="text-[9px] font-mono text-brand-muted uppercase">${timeStr}</span>
+                            </div>
+                            <h4 class="text-sm font-display font-bold text-brand-text leading-snug hover:text-brand-accent transition">${item.title}</h4>
+                            <p class="text-xs text-brand-muted line-clamp-2 leading-relaxed font-sans">${item.description.replace(/<[^>]*>/g, '')}</p>
+                            <div class="flex items-center gap-1 text-[9px] font-mono text-brand-accent font-semibold tracking-wider uppercase mt-1">
+                                Read stream <span>→</span>
+                            </div>
+                        `;
+                        newsContainer.appendChild(newsEl);
+                    });
+                    initSpotlights();
+                } else {
+                    throw new Error("RSS parse error");
+                }
+            } catch (err) {
+                console.error("AI News Fetch Error:", err);
+                renderBackupNews();
+            }
+        }
+
+        function renderBackupNews() {
+            const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = '';
+            
+            const backupItems = [
+                { title: "Spider-Web Haptic Integration Completed", desc: "Brooklyn labs achieve bio-mechanic sync between particle shooters and neural mapping indices.", tag: "SENSORS_ACTIVE", time: "1h ago" },
+                { title: "Web Grid Link Protocol Established", desc: "Multiverse transport corridors stabilized for safe query transfers across dimensional routing pathways.", tag: "WEB_GRID_LINK", time: "3h ago" },
+                { title: "Alchemax Ramps Production on Next-Gen Acceleration Core", desc: "Deca-core processing nodes optimized to provide raw local computation rates.", tag: "ALCHEMAX_UPDATE", time: "6h ago" }
+            ];
+
+            backupItems.forEach((item) => {
+                const newsEl = document.createElement('div');
+                newsEl.className = "bento-card p-5 rounded-2xl flex flex-col gap-2.5 border border-brand-border";
+                newsEl.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-mono text-brand-accent font-bold tracking-widest bg-brand-accent/15 px-2 py-0.5 rounded">${item.tag}</span>
+                        <span class="text-[9px] font-mono text-brand-muted uppercase">${item.time}</span>
+                    </div>
+                    <h4 class="text-sm font-display font-bold text-brand-text leading-snug">${item.title}</h4>
+                    <p class="text-xs text-brand-muted leading-relaxed font-sans">${item.desc}</p>
+                `;
+                newsContainer.appendChild(newsEl);
+            });
+            initSpotlights();
+        }
+        fetchAINews();
+
+        // --- 8. NOTION SYNCRONIZER INTEGRATION ---
+        const notepad = document.getElementById('notion-notes');
+        const modal = document.getElementById('notion-modal');
+        const tokenInput = document.getElementById('notion-token');
+        const dbIdInput = document.getElementById('notion-db-id');
+
+        notepad.value = localStorage.getItem('abhinav_notes') || '';
+
+        function saveNoteLocally() {
+            localStorage.setItem('abhinav_notes', notepad.value);
+        }
+
+        function openNotionModal() {
+            tokenInput.value = localStorage.getItem('notion_token') || '';
+            dbIdInput.value = localStorage.getItem('notion_db_id') || '';
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeNotionModal() {
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function saveNotionConfig() {
+            localStorage.setItem('notion_token', tokenInput.value);
+            localStorage.setItem('notion_db_id', dbIdInput.value);
+            closeNotionModal();
+            alert("Notion configuration updated successfully!");
+        }
+
+        async function syncToNotion() {
+            const noteText = notepad.value.trim();
+            if (!noteText) {
+                alert("Notes scratchpad is empty!");
+                return;
+            }
+
+            const token = localStorage.getItem('notion_token');
+            const dbId = localStorage.getItem('notion_db_id');
+
+            if (!token || !dbId) {
+                alert("Please configure Notion integration token first!");
+                openNotionModal();
+                return;
+            }
+
+            const syncBtn = document.querySelector('button[onclick="syncToNotion()"]');
+            const originalHTML = syncBtn.innerHTML;
+            syncBtn.innerHTML = `Syncing...`;
+            syncBtn.disabled = true;
+
+            try {
+                const response = await fetch('https://corsproxy.io/?https://api.notion.com/v1/pages', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Notion-Version': '2022-06-28',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        parent: { database_id: dbId },
+                        properties: {
+                            Name: {
+                                title: [
+                                    {
+                                        text: {
+                                            content: noteText.slice(0, 50) + (noteText.length > 50 ? '...' : '')
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        children: [
+                            {
+                                object: 'block',
+                                type: 'paragraph',
+                                paragraph: {
+                                    rich_text: [
+                                        {
+                                            type: 'text',
+                                            text: {
+                                                content: noteText
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    })
+                });
+
+                if (response.ok) {
+                    alert("Draft sync complete! Note dispatched to Notion.");
+                    notepad.value = '';
+                    localStorage.removeItem('abhinav_notes');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message || "Failed post request");
+                }
+            } catch (err) {
+                console.error("Notion Sync Error:", err);
+                alert("Sync failed. Check API details and integrations share.");
+            } finally {
+                syncBtn.innerHTML = originalHTML;
+                syncBtn.disabled = false;
+            }
+        }
+
+        // --- 9. INTERACTIVE COMMAND TERMINAL ---
+        const termLog = document.getElementById('terminal-log');
+        const termInput = document.getElementById('terminal-input');
+
+        function appendToLog(cmd, response, isError = false) {
+            const promptEl = document.createElement('div');
+            promptEl.className = "text-brand-text mt-2 font-bold";
+            promptEl.innerText = `abhinav@morales:~$ ${cmd}`;
+            termLog.appendChild(promptEl);
+
+            const respEl = document.createElement('div');
+            respEl.className = isError ? "text-red-400" : "text-brand-muted";
+            respEl.innerHTML = response;
+            termLog.appendChild(respEl);
+            
+            termLog.scrollTop = termLog.scrollHeight;
+        }
+
+        function handleTerminalCommand(e) {
+            e.preventDefault();
+            const rawVal = termInput.value.trim();
+            termInput.value = '';
+
+            if (!rawVal) return;
+
+            const args = rawVal.split(' ');
+            const cmd = args[0].toLowerCase();
+
+            let response = '';
+            let isError = false;
+
+            switch (cmd) {
+                case '/help':
+                    response = `Available terminal controls:<br>
+                      <span class="text-brand-accent">/about</span> - Print operator credentials<br>
+                      <span class="text-brand-accent">/projects</span> - Display ongoing codebase repos<br>
+                      <span class="text-brand-accent">/skills</span> - Print skills inventory indices<br>
+                      <span class="text-brand-accent">/pomodoro [start/pause/reset]</span> - Control timer widget<br>
+                      <span class="text-brand-accent">/notion</span> - Check Notion API configuration state<br>
+                      <span class="text-brand-accent">/clear</span> - Clear log logs`;
+                    break;
+                case '/about':
+                    response = `Operator: Abhinav (Miles Morales Profile Active)<br>
+                      Journey: 1st Year BS in Data Science at IIT Madras (Class of 2029)<br>
+                      Core Focus: AI programming models & algorithmic Quant trading strategy builders.`;
+                    break;
+                case '/projects':
+                    response = `Active Repos:<br>
+                      - <span class="text-brand-accent">openai-vs-claude</span>: Capabilities comparisons.<br>
+                      - <span class="text-brand-accent">MoneyWise App</span>: Gamified finance conceptual draft.`;
+                    break;
+                case '/skills':
+                    response = `Active Skills: Python, Prompting & Data Analysis workflows.`;
+                    break;
+                case '/pomodoro':
+                    const sub = args[1] ? args[1].toLowerCase() : '';
+                    if (sub === 'start') {
+                        if (!isPomoRunning) togglePomodoro();
+                        response = "Focus countdown active.";
+                    } else if (sub === 'pause') {
+                        if (isPomoRunning) togglePomodoro();
+                        response = "Focus countdown suspended.";
+                    } else if (sub === 'reset') {
+                        resetPomodoro();
+                        response = "Focus countdown initialized.";
+                    } else {
+                        response = "Usage: /pomodoro [start/pause/reset]";
+                    }
+                    break;
+                case '/notion':
+                    const token = localStorage.getItem('notion_token') ? 'ACTIVE (private token)' : 'UNCONFIGURED';
+                    const db = localStorage.getItem('notion_db_id') ? 'BOUND' : 'UNCONFIGURED';
+                    response = `Notion API Status:<br>
+                      Auth token: ${token}<br>
+                      Database code: ${db}`;
+                    break;
+                case '/clear':
+                    termLog.innerHTML = '<div class="text-[10px] text-brand-accent">SPIDEY_NET ACTIVE. Type <span class="font-bold">/help</span> for console guidelines.</div>';
+                    return;
+                default:
+                    response = `Console Error: Command "${cmd}" not recognized. Type /help.`;
+                    isError = true;
+            }
+
+            appendToLog(rawVal, response, isError);
+        }
     </script>
 </body>
 </html>
