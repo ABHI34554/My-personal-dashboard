@@ -314,8 +314,11 @@
 
     <!-- BACKGROUND GRAPHICS -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Ribbed Glass Texture Background -->
+        <div id="ribbed-glass-bg" class="absolute inset-0 bg-[url('ribbed_glass.jpg')] bg-no-repeat bg-cover bg-center opacity-[0.3] transition-opacity duration-500"></div>
+
         <!-- Spider-Man Artwork Backdrop -->
-        <div id="spiderman-bg" class="absolute inset-0 bg-[url('spiderman.png')] bg-no-repeat bg-cover bg-center opacity-[0.22] dark:opacity-[0.15] transition-opacity duration-500"></div>
+        <div id="spiderman-bg" class="absolute inset-0 bg-[url('spiderman.png')] bg-no-repeat bg-cover bg-center opacity-[0.08] mix-blend-luminosity transition-opacity duration-500"></div>
         <div class="bg-radial-vignette"></div>
         
         <!-- Web Grid -->
@@ -658,14 +661,17 @@
         function toggleTheme() {
             const body = document.body;
             const bgImage = document.getElementById('spiderman-bg');
+            const glassImage = document.getElementById('ribbed-glass-bg');
             if (body.classList.contains('light-theme')) {
                 body.classList.remove('light-theme');
                 document.documentElement.classList.add('dark');
-                if (bgImage) bgImage.style.opacity = '0.15';
+                if (bgImage) bgImage.style.opacity = '0.08';
+                if (glassImage) glassImage.style.opacity = '0.3';
             } else {
                 body.classList.add('light-theme');
                 document.documentElement.classList.remove('dark');
-                if (bgImage) bgImage.style.opacity = '0.38';
+                if (bgImage) bgImage.style.opacity = '0.2';
+                if (glassImage) glassImage.style.opacity = '0.55';
             }
         }
         // Force dark default
