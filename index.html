@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Abhinav's Miles Morales inspired personal dashboard with focus, notes, music, news, and terminal widgets.">
     <title>Abhinav OS // Miles Morales Bento Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -18,1345 +19,726 @@
                             border: 'var(--card-border)',
                             text: 'var(--text-color)',
                             muted: 'var(--text-muted)',
-                            accent: 'var(--color-primary)', // Mapped to DESIGN.md
-                            accentGlow: 'rgba(255, 23, 34, 0.25)',
-                            carbon: '#121214',
+                            accent: 'var(--color-primary)',
+                            carbon: '#121214'
                         }
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         display: ['Outfit', 'sans-serif'],
-                        mono: ['Space Mono', 'monospace'],
+                        mono: ['Space Mono', 'monospace']
                     }
                 }
             }
-        }
+        };
     </script>
     <style>
-        /* CSS VARIABLE MAPPING ACCORDING TO DESIGN.MD */
         :root {
             --canvas: #06070d;
-            --card-bg: rgba(10, 11, 20, 0.55);
-            --card-border: rgba(255, 23, 34, 0.08);
+            --card-bg: rgba(10, 11, 20, 0.58);
+            --card-border: rgba(255, 23, 34, 0.12);
             --color-primary: #ff1722;
             --text-color: #f8fafc;
-            --text-muted: #64748b;
-            --spotlight-color: rgba(255, 23, 34, 0.1);
-        }
-        
-        .light-theme {
-            --canvas: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.75);
-            --card-border: rgba(255, 23, 34, 0.12);
-            --text-color: #0f172a;
-            --text-muted: #475569;
-            --spotlight-color: rgba(255, 23, 34, 0.06);
+            --text-muted: #94a3b8;
+            --spotlight-color: rgba(255, 23, 34, 0.12);
         }
 
-        /* TACTILE GRAINY TEXTURE OVERLAY */
+        .light-theme {
+            --canvas: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.78);
+            --card-border: rgba(255, 23, 34, 0.16);
+            --text-color: #0f172a;
+            --text-muted: #475569;
+            --spotlight-color: rgba(255, 23, 34, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+        h1, h2, h3, h4 { text-wrap: balance; }
+        p { text-wrap: pretty; }
+
         .noise-overlay {
             position: fixed;
             inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             opacity: 0.035;
             pointer-events: none;
-            z-index: 999;
+            z-index: 60;
         }
 
-        /* BLUEPRINT WEB GRID LINES */
         .grid-overlay {
             position: fixed;
             inset: 0;
-            background-image: 
-                linear-gradient(to right, rgba(255, 23, 34, 0.015) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 23, 34, 0.015) 1px, transparent 1px);
+            background-image:
+                linear-gradient(to right, rgba(255, 23, 34, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 23, 34, 0.025) 1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
             z-index: 1;
         }
 
-        .bg-radial-vignette {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, transparent 10%, var(--canvas) 85%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* DRIFTING GRADIENT MESH BLOBS */
-        @keyframes meshDrift {
-            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-            33% { transform: translate(40px, -60px) scale(1.15) rotate(120deg); }
-            66% { transform: translate(-30px, 30px) scale(0.9) rotate(240deg); }
-            100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
-        }
-
-        .animate-mesh1 { animation: meshDrift 22s infinite alternate ease-in-out; }
-        .animate-mesh2 { animation: meshDrift 28s infinite alternate-reverse ease-in-out; }
-
-        /* TYPOGRAPHY WRAPPING RULES */
-        h1, h2, h3, h4 {
-            text-wrap: balance;
-        }
-        p {
-            text-wrap: pretty;
-        }
-
-        /* CONTAINER QUERIES FOR RESPONSIVE BENTO GRID */
-        .bento-container {
-            container-type: inline-size;
-        }
-
-        /* PREMIUM SQUIRCLE BENTO CARDS */
         .bento-card {
             position: relative;
-            background: var(--card-bg);
-            backdrop-filter: blur(35px) saturate(140%);
-            -webkit-backdrop-filter: blur(35px) saturate(140%);
-            border-radius: 2rem; 
-            padding: 1.75rem;
-            transition: transform 0.6s cubic-bezier(0.25, 1.25, 0.5, 1.2), box-shadow 0.4s ease, border-color 0.4s ease;
             overflow: hidden;
             z-index: 10;
-            
-            /* Double-layer glowing border image masking */
-            background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
-                        linear-gradient(135deg, rgba(255, 23, 34, 0.18), rgba(255, 255, 255, 0.03)) border-box;
             border: 1px solid transparent;
-            box-shadow: 
-                0 4px 30px rgba(0, 0, 0, 0.04),
-                inset 0 1px 1px rgba(255, 23, 34, 0.15),
-                inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            background:
+                linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                linear-gradient(135deg, rgba(255, 23, 34, 0.22), rgba(255, 255, 255, 0.04)) border-box;
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, 0.18),
+                inset 0 1px 1px rgba(255, 23, 34, 0.16);
+            backdrop-filter: blur(32px) saturate(140%);
+            -webkit-backdrop-filter: blur(32px) saturate(140%);
+            transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
         }
 
-        .light-theme .bento-card {
-            background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
-                        linear-gradient(135deg, rgba(255, 23, 34, 0.22), rgba(15, 23, 42, 0.03)) border-box;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.04),
-                inset 0 1px 1px rgba(255, 255, 255, 0.45),
-                inset 0 -1px 1px rgba(0, 0, 0, 0.02);
-        }
-
-        /* DYNAMIC SPOTLIGHT BORDERS */
         .bento-card::before {
             content: '';
             position: absolute;
             inset: -1px;
-            background: radial-gradient(
-                450px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
-                var(--spotlight-color),
-                transparent 60%
-            );
-            z-index: 0;
-            pointer-events: none;
+            background: radial-gradient(420px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), var(--spotlight-color), transparent 60%);
             opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        .bento-card:hover::before {
-            opacity: 1;
+            pointer-events: none;
+            transition: opacity 220ms ease;
+            z-index: 0;
         }
 
         .bento-card:hover {
-            transform: translateY(-5px) scale(1.015);
-            box-shadow: 
-                0 25px 50px rgba(255, 23, 34, 0.08),
-                0 20px 40px rgba(0, 0, 0, 0.18),
-                inset 0 1px 1px rgba(255, 23, 34, 0.3);
+            transform: translateY(-3px);
             border-color: rgba(255, 23, 34, 0.45);
+            box-shadow:
+                0 24px 55px rgba(255, 23, 34, 0.08),
+                0 18px 45px rgba(0, 0, 0, 0.24),
+                inset 0 1px 1px rgba(255, 23, 34, 0.28);
         }
 
-        /* LIQUID GLASS SHIMMER LAYER */
-        .liquid-glass-shimmer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(135deg, transparent 30%, rgba(255, 23, 34, 0.04) 50%, transparent 70%);
-            background-size: 200% 200%;
-            background-position: -100% -100%;
-            transition: background-position 0.9s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 1;
-        }
-        .bento-card:hover .liquid-glass-shimmer {
-            background-position: 200% 200%;
-            filter: url(#liquid-glass-refraction);
-        }
-
-        /* GOOEY LIQUID GLASS BUTTONS */
-        .gooey-button-wrap {
-            filter: url(#gooey-blend);
-            position: relative;
-            display: inline-block;
-            overflow: visible;
-        }
-        
-        .liquid-blob {
-            position: absolute;
-            background: var(--color-primary);
-            border-radius: 50%;
-            width: 2.5rem;
-            height: 2.5rem;
-            opacity: 0;
-            transform: scale(0.1);
-            transition: transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .btn-interactive {
-            position: relative;
-            overflow: visible !important;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-        }
-
-        .btn-interactive:hover {
-            transform: scale(1.025);
-            box-shadow: 0 12px 24px rgba(255, 23, 34, 0.3);
-        }
-
-        .btn-interactive:active {
-            transform: scale(0.975);
-        }
-
-        .btn-interactive:hover .liquid-blob-1 {
-            opacity: 0.9;
-            transform: translate(30px, -20px) scale(2.2);
-        }
-        .btn-interactive:hover .liquid-blob-2 {
-            opacity: 0.9;
-            transform: translate(-35px, 20px) scale(2);
-        }
-        .btn-interactive:hover .liquid-blob-3 {
-            opacity: 0.9;
-            transform: translate(15px, 25px) scale(1.8);
-        }
-
-        /* AUTO-SIZING TEXT AREA (MODERN Platform CSS) */
-        #notion-notes {
-            field-sizing: content;
-            min-height: 120px;
-            max-height: 350px;
-        }
-
-        /* INTERACTIVE VALIDATION (MODERN CSS) */
-        .dialog-input:user-invalid {
-            border-color: var(--color-primary) !important;
-            box-shadow: 0 0 0 2px rgba(255, 23, 34, 0.25) !important;
-        }
-
-        /* NATIVE DIALOG TRANSITION AND ENTRY (allow-discrete API support) */
-        dialog {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.3s ease, transform 0.3s ease, overlay 0.3s allow-discrete, display 0.3s allow-discrete;
-        }
-        dialog[open] {
-            opacity: 1;
-            transform: scale(1);
-        }
-        @starting-style {
-            dialog[open] {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-        }
-
-        /* BACKDROP TRANSITION ENTRY */
-        dialog::backdrop {
-            background: rgba(0, 0, 0, 0);
-            backdrop-filter: blur(0px);
-            transition: background-color 0.3s ease, backdrop-filter 0.3s ease, overlay 0.3s allow-discrete, display 0.3s allow-discrete;
-        }
-        dialog[open]::backdrop {
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-        }
-        @starting-style {
-            dialog[open]::backdrop {
-                background: rgba(0, 0, 0, 0);
-                backdrop-filter: blur(0px);
-            }
-        }
-
-        /* DYNAMIC NEWS LIST TRANSITIONS */
-        .news-item {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        @starting-style {
-            .news-item {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-        }
-
+        .bento-card:hover::before { opacity: 1; }
+        .card-content { position: relative; z-index: 2; }
+        .glow-accent { text-shadow: 0 0 15px rgba(255, 23, 34, 0.5); }
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 23, 34, 0.12); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 23, 34, 0.22); border-radius: 999px; }
 
         .progress-ring__circle {
-            transition: stroke-dashoffset 0.4s ease;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
+            transition: stroke-dashoffset 220ms ease;
         }
 
-        .glow-accent {
-            text-shadow: 0 0 15px rgba(255, 23, 34, 0.5);
+        dialog {
+            opacity: 0;
+            transform: scale(0.96);
+            transition: opacity 180ms ease, transform 180ms ease, overlay 180ms allow-discrete, display 180ms allow-discrete;
+        }
+        dialog[open] { opacity: 1; transform: scale(1); }
+        dialog::backdrop { background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(8px); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.001ms !important;
+            }
+            #cursor-canvas { display: none; }
         }
     </style>
 </head>
-<body class="bg-brand-canvas text-brand-text font-sans p-4 md:p-8 min-h-screen antialiased selection:bg-brand-accent selection:text-white transition-colors duration-500 relative overflow-x-hidden">
-
-    <!-- GRAINY OVERLAY -->
+<body class="bg-brand-canvas text-brand-text font-sans min-h-screen p-4 md:p-8 antialiased selection:bg-brand-accent selection:text-white transition-colors duration-300 overflow-x-hidden">
     <div class="noise-overlay"></div>
-
-    <!-- BACKGROUND GRAPHICS -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <!-- Ribbed Glass Texture Background -->
-        <div id="ribbed-glass-bg" class="absolute inset-0 bg-[url('ribbed_glass.jpg')] bg-no-repeat bg-cover bg-center opacity-[0.3] transition-opacity duration-500"></div>
-
-        <!-- Spider-Man Artwork Backdrop -->
-        <div id="spiderman-bg" class="absolute inset-0 bg-[url('spiderman.png')] bg-no-repeat bg-cover bg-center opacity-[0.08] mix-blend-luminosity transition-opacity duration-500"></div>
-        <div class="bg-radial-vignette"></div>
-        
-        <!-- Web Grid -->
+        <div id="ribbed-glass-bg" class="absolute inset-0 bg-[url('ribbed_glass.jpg')] bg-cover bg-center opacity-30 transition-opacity duration-300"></div>
+        <div id="spiderman-bg" class="absolute inset-0 bg-[url('spiderman.png')] bg-cover bg-center opacity-[0.08] mix-blend-luminosity transition-opacity duration-300"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_12%,var(--canvas)_86%)]"></div>
         <div class="grid-overlay"></div>
-
-        <!-- Drifting Splatter Blobs -->
-        <div class="absolute w-[50vw] h-[50vw] max-w-[650px] rounded-full bg-brand-accent/8 blur-[110px] -top-20 -left-20 animate-mesh1"></div>
-        <div class="absolute w-[60vw] h-[60vw] max-w-[750px] rounded-full bg-brand-accent/5 blur-[130px] bottom-10 right-10 animate-mesh2"></div>
+        <div class="absolute -top-24 -left-24 h-[46vw] max-h-[620px] w-[46vw] max-w-[620px] rounded-full bg-brand-accent/10 blur-[120px]"></div>
+        <div class="absolute bottom-0 right-0 h-[52vw] max-h-[720px] w-[52vw] max-w-[720px] rounded-full bg-brand-accent/10 blur-[140px]"></div>
     </div>
 
-    <!-- CURSOR CANVAS -->
-    <canvas id="cursor-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-50"></canvas>
+    <canvas id="cursor-canvas" class="fixed left-0 top-0 z-50 h-full w-full pointer-events-none"></canvas>
 
-    <div class="relative z-10 max-w-7xl mx-auto flex flex-col gap-6">
-        
-        <!-- HEADER -->
-        <header class="flex justify-between items-center py-3 px-6 rounded-[1.5rem] bento-card text-[11.5px] font-mono text-brand-muted uppercase tracking-widest">
-            <div class="relative z-10 flex items-center gap-2.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-brand-accent shadow-[0_0_12px_#ff1722] animate-pulse"></span>
-                <span class="font-bold text-brand-text">BROOKLYN_GRID // MORALES_SYS</span>
+    <div class="relative z-10 mx-auto flex max-w-7xl flex-col gap-6">
+        <header class="bento-card flex flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between">
+            <div class="card-content flex items-center gap-3">
+                <span class="h-2.5 w-2.5 rounded-full bg-brand-accent shadow-[0_0_12px_#ff1722]"></span>
+                <span class="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-brand-text">Brooklyn Grid // Morales Sys</span>
             </div>
-            <div class="relative z-10 flex items-center gap-6">
-                <div class="hidden md:flex items-center gap-5">
-                    <span id="header-loc">DELHI, IN // 28.6° N</span>
-                    <span id="header-net">NET_EST: 220MB/S</span>
-                    <span id="header-ping">PING_RATING: 12MS</span>
-                </div>
-                <button onclick="toggleTheme()" class="p-2 rounded-xl hover:bg-brand-accent/15 hover:text-brand-accent transition cursor-pointer text-[14px]">
-                    🌗
-                </button>
+            <div class="card-content flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] text-brand-muted">
+                <span>Delhi, IN</span>
+                <span id="network-status">Static build online</span>
+                <button id="theme-toggle" type="button" class="rounded-xl border border-brand-border px-3 py-2 text-brand-text transition hover:border-brand-accent hover:text-brand-accent" aria-label="Toggle dark and light theme">Theme</button>
             </div>
         </header>
 
-        <!-- BENTO CONTAINER GRID -->
-        <main class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-5 items-stretch">
-
-            <!-- CARD 1: PROFILE & TIMELINE -->
-            <section class="lg:col-span-3 bento-card bento-container flex flex-col justify-between min-h-[500px]">
-                <div class="liquid-glass-shimmer"></div>
-                <div class="relative z-10 flex flex-col gap-5">
-                    <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider flex justify-between items-center border-b border-brand-border pb-3.5">
-                        <span>[01 // Operator Profile]</span>
-                        <span class="text-brand-accent font-semibold flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-ping"></span> Sync Active</span>
-                    </div>
-
-                    <!-- AVATAR -->
-                    <div class="flex items-center gap-4">
-                        <div class="relative p-0.5 rounded-2xl bg-gradient-to-tr from-brand-accent to-neutral-900 shadow-[0_0_20px_rgba(255,23,35,0.35)]">
-                            <img src="https://ui-avatars.com/api/?name=Abhinav&background=07070d&color=ff1722&bold=true&font-size=0.33" alt="Profile avatar" class="profile-avatar w-16 h-16 rounded-[14px] border border-brand-border object-cover">
+        <main class="grid grid-cols-1 gap-5 lg:grid-cols-12">
+            <section class="bento-card min-h-[480px] lg:col-span-3">
+                <div class="card-content flex h-full flex-col justify-between gap-6">
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between border-b border-brand-border pb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-brand-muted">
+                            <span>[01 // Operator]</span>
+                            <span class="text-brand-accent">Active</span>
                         </div>
-                        <div>
-                            <h2 class="profile-text text-2xl font-display font-extrabold tracking-tight text-brand-text leading-none">Abhinav</h2>
-                            <p class="text-[10px] text-brand-muted font-mono mt-1.5">@ABHI34554-GITHUB</p>
+                        <div class="flex items-center gap-4">
+                            <div class="grid h-16 w-16 place-items-center rounded-2xl border border-brand-border bg-brand-accent/15 font-display text-xl font-extrabold text-brand-accent shadow-[0_0_22px_rgba(255,23,34,0.25)]">AB</div>
+                            <div>
+                                <h1 class="font-display text-3xl font-extrabold leading-none tracking-normal text-brand-text">Abhinav</h1>
+                                <p class="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-brand-muted">@ABHI34554</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- TIMELINE -->
-                    <div class="mt-2 space-y-4">
-                        <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Academics & Journey</div>
-                        
-                        <div class="relative border-l-2 border-brand-border/40 pl-4 ml-1.5 space-y-4.5 text-xs">
-                            <div class="relative">
-                                <span class="absolute -left-[23px] top-1 w-3.5 h-3.5 rounded-full bg-brand-accent border-2 border-brand-canvas shadow-[0_0_8px_#ff1722]"></span>
-                                <div class="font-display font-semibold text-brand-text">Year 1: BS Data Science</div>
-                                <div class="text-[11px] text-brand-muted">IIT Madras · 2025 - 2026</div>
-                                <span class="text-[9px] font-mono text-brand-accent bg-brand-accent/15 px-1.5 py-0.5 rounded mt-1.5 inline-block font-bold">Active Phase</span>
-                            </div>
-                            <div class="relative opacity-40">
-                                <span class="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-brand-muted border border-brand-canvas"></span>
-                                <div class="font-display font-semibold">Year 2: Applied Stats</div>
-                                <div class="text-[11px] text-brand-muted">IIT Madras · 2026 - 2027</div>
-                            </div>
-                            <div class="relative opacity-40">
-                                <span class="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-brand-muted border border-brand-canvas"></span>
-                                <div class="font-display font-semibold">Year 3: Advanced ML Models</div>
-                                <div class="text-[11px] text-brand-muted">IIT Madras · 2027 - 2028</div>
-                            </div>
-                            <div class="relative opacity-40">
-                                <span class="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-brand-muted border border-brand-canvas"></span>
-                                <div class="font-display font-semibold">Year 4: Capstone & Quant</div>
-                                <div class="text-[11px] text-brand-muted">IIT Madras · Graduation 2029</div>
+                        <div class="space-y-4">
+                            <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-brand-muted">Academics & Journey</p>
+                            <div class="ml-1 space-y-4 border-l-2 border-brand-border/60 pl-5 text-xs">
+                                <div class="relative">
+                                    <span class="absolute -left-[28px] top-1 h-3.5 w-3.5 rounded-full border-2 border-brand-canvas bg-brand-accent shadow-[0_0_10px_#ff1722]"></span>
+                                    <p class="font-display font-bold text-brand-text">Year 1: BS Data Science</p>
+                                    <p class="mt-1 text-brand-muted">IIT Madras · 2025 - 2026</p>
+                                </div>
+                                <div class="relative opacity-55">
+                                    <span class="absolute -left-[27px] top-1 h-3 w-3 rounded-full border border-brand-canvas bg-brand-muted"></span>
+                                    <p class="font-display font-bold">Year 2: Applied Stats</p>
+                                    <p class="mt-1 text-brand-muted">IIT Madras · 2026 - 2027</p>
+                                </div>
+                                <div class="relative opacity-55">
+                                    <span class="absolute -left-[27px] top-1 h-3 w-3 rounded-full border border-brand-canvas bg-brand-muted"></span>
+                                    <p class="font-display font-bold">Year 3: Advanced ML Models</p>
+                                    <p class="mt-1 text-brand-muted">IIT Madras · 2027 - 2028</p>
+                                </div>
+                                <div class="relative opacity-55">
+                                    <span class="absolute -left-[27px] top-1 h-3 w-3 rounded-full border border-brand-canvas bg-brand-muted"></span>
+                                    <p class="font-display font-bold">Year 4: Capstone & Quant</p>
+                                    <p class="mt-1 text-brand-muted">IIT Madras · Graduation 2029</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="relative z-10 pt-4 border-t border-brand-border mt-6">
-                    <div class="gooey-button-wrap w-full">
-                        <a href="https://github.com/ABHI34554-GITHUB" target="_blank" class="btn-interactive w-full py-3 px-4 rounded-xl bg-brand-accent text-white font-display font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-accent/20 relative z-10">
-                            <!-- Liquid Blobs -->
-                            <span class="liquid-blob liquid-blob-1 -left-4 -top-4"></span>
-                            <span class="liquid-blob liquid-blob-2 -right-4 -bottom-4 bg-red-850"></span>
-                            <span class="liquid-blob liquid-blob-3 left-1/2 -bottom-6"></span>
-                            <span class="relative z-10 flex items-center justify-center gap-2">
-                                <svg class="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                                Terminal Operator Profile
-                            </span>
-                        </a>
-                    </div>
+                    <a href="https://github.com/ABHI34554" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center rounded-xl bg-brand-accent px-4 py-3 text-xs font-extrabold text-white shadow-lg shadow-brand-accent/20 transition hover:brightness-110">GitHub Operator Profile</a>
                 </div>
             </section>
 
-            <!-- MIDDLE COLUMN -->
-            <div class="lg:col-span-6 flex flex-col gap-5">
-                
-                <!-- SYSTEM CLOCK -->
-                <section class="bento-card flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
-                    <div class="liquid-glass-shimmer"></div>
-                    <div class="absolute w-[220px] h-[220px] rounded-full bg-brand-accent/10 blur-[50px] -right-16 -top-16 pointer-events-none"></div>
-                    <div class="relative z-10">
-                        <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-ping"></span> Brooklyn Web Protocol
+            <div class="flex flex-col gap-5 lg:col-span-6">
+                <section class="bento-card">
+                    <div class="card-content flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-brand-muted">Brooklyn Web Protocol</p>
+                            <h2 class="mt-2 font-display text-3xl font-extrabold leading-tight text-brand-text md:text-4xl">Good <span id="greeting-display" class="text-brand-accent glow-accent">day</span>, Abhinav.</h2>
+                            <p id="date-display" class="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-brand-muted">Loading diagnostics...</p>
                         </div>
-                        <h1 class="text-3xl md:text-4xl font-display font-extrabold tracking-tight text-brand-text mt-2 leading-none">
-                            Good <span class="italic font-normal text-brand-accent glow-accent" id="greeting-display">day</span>, Abhinav.
-                        </h1>
-                        <p id="date-display" class="text-[10px] font-mono text-brand-muted mt-3 uppercase tracking-widest">Loading Spidey Diagnostics...</p>
-                    </div>
-                    <div class="relative z-10 md:text-right border-l-2 md:border-l-0 md:border-r-2 border-brand-border pl-4 md:pl-0 pr-4">
-                        <div class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Local Standard Time</div>
-                        <div id="time-display" class="text-4xl md:text-5xl font-mono font-bold text-brand-text tracking-tighter mt-1 flex items-baseline gap-1">
-                            00<span class="text-brand-accent animate-pulse font-normal">:</span>00
+                        <div class="border-l-2 border-brand-border pl-4 md:border-l-0 md:border-r-2 md:pl-0 md:pr-4 md:text-right">
+                            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-brand-muted">Local Time</p>
+                            <p id="time-display" class="mt-1 font-mono text-5xl font-bold tracking-normal text-brand-text">00:00</p>
                         </div>
                     </div>
                 </section>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    
-                    <!-- POMODORO -->
-                    <section class="bento-card flex flex-col items-center justify-between min-h-[310px]">
-                        <div class="liquid-glass-shimmer"></div>
-                        <div class="w-full flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-2.5 mb-2 relative z-10">
-                            <span>[04 // Web-Focus Engine]</span>
-                            <span id="pomo-mode" class="text-brand-accent font-bold tracking-widest glow-accent">FOCUS</span>
-                        </div>
-                        
-                        <div class="relative w-36 h-36 flex items-center justify-center my-3 z-10">
-                            <svg class="absolute w-full h-full transform -rotate-90">
-                                <circle class="text-brand-border" stroke-width="6.5" stroke="currentColor" fill="transparent" r="64" cx="72" cy="72"/>
-                                <circle id="pomo-circle" class="text-brand-accent progress-ring__circle" stroke-width="6.5" stroke-dasharray="402" stroke-dashoffset="0" stroke-linecap="round" stroke="currentColor" fill="transparent" r="64" cx="72" cy="72" style="filter: drop-shadow(0 0 6px rgba(255, 23, 34, 0.6));"/>
-                            </svg>
-                            <div class="text-center z-10">
-                                <div id="pomo-time" class="text-3xl font-mono font-bold tracking-tight text-brand-text">25:00</div>
-                                <div class="text-[8px] font-mono text-brand-muted uppercase tracking-widest mt-1">Countdown</div>
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <section class="bento-card min-h-[315px]">
+                        <div class="card-content flex h-full flex-col items-center justify-between gap-4">
+                            <div class="flex w-full items-center justify-between border-b border-brand-border pb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-brand-muted">
+                                <span>[04 // Focus]</span>
+                                <span id="pomo-mode" class="text-brand-accent">Focus</span>
                             </div>
-                        </div>
-
-                        <div class="flex gap-3.5 w-full relative z-10">
-                            <div class="gooey-button-wrap flex-1">
-                                <button id="pomo-toggle" onclick="togglePomodoro()" class="btn-interactive w-full py-2.5 px-4 rounded-xl bg-brand-accent text-white transition text-xs font-bold shadow-lg shadow-brand-accent/25 cursor-pointer relative z-10">
-                                    <span class="liquid-blob liquid-blob-1 -left-4 -top-4"></span>
-                                    <span class="liquid-blob liquid-blob-2 -right-4 -bottom-4 bg-red-805"></span>
-                                    <span class="liquid-blob liquid-blob-3 left-1/3 -bottom-6"></span>
-                                    <span class="relative z-10">Start Focus</span>
-                                </button>
+                            <div class="relative grid h-40 w-40 place-items-center">
+                                <svg class="absolute h-full w-full" viewBox="0 0 160 160" aria-hidden="true">
+                                    <circle cx="80" cy="80" r="68" fill="transparent" stroke="currentColor" stroke-width="7" class="text-brand-border" />
+                                    <circle id="pomo-circle" cx="80" cy="80" r="68" fill="transparent" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="0" class="progress-ring__circle text-brand-accent" />
+                                </svg>
+                                <div class="text-center">
+                                    <p id="pomo-time" class="font-mono text-3xl font-bold text-brand-text">25:00</p>
+                                    <p class="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-brand-muted">Countdown</p>
+                                </div>
                             </div>
-                            <button onclick="resetPomodoro()" class="p-2.5 rounded-xl border border-brand-border hover:border-brand-accent hover:text-brand-accent transition text-xs font-mono cursor-pointer" title="Reset Session">
-                                ↺
-                            </button>
-                            <button onclick="switchPomodoroMode()" class="p-2.5 rounded-xl border border-brand-border hover:border-brand-accent hover:text-brand-accent transition text-[10px] font-bold uppercase tracking-wider cursor-pointer">
-                                Break
-                            </button>
+                            <div class="flex w-full gap-3">
+                                <button id="pomo-toggle" type="button" class="flex-1 rounded-xl bg-brand-accent px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-brand-accent/20 transition hover:brightness-110">Start Focus</button>
+                                <button id="pomo-reset" type="button" class="rounded-xl border border-brand-border px-3 py-2.5 font-mono text-xs transition hover:border-brand-accent hover:text-brand-accent" aria-label="Reset Pomodoro">Reset</button>
+                                <button id="pomo-switch" type="button" class="rounded-xl border border-brand-border px-3 py-2.5 font-mono text-xs transition hover:border-brand-accent hover:text-brand-accent">Break</button>
+                            </div>
                         </div>
                     </section>
 
-                    <!-- AUDIO DECK -->
-                    <section class="bento-card flex flex-col justify-between min-h-[310px] overflow-hidden">
-                        <div class="liquid-glass-shimmer"></div>
-                        <div class="flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-2.5 mb-2 relative z-10">
-                            <span>[05 // Spider Beats]</span>
-                            <span class="flex items-center gap-1 text-[9px] text-[#1db954] font-bold uppercase">
-                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.59 17.31c-.22.36-.68.48-1.04.26-2.9-1.77-6.55-2.17-10.85-1.19-.41.09-.82-.16-.91-.57-.09-.41.16-.82.57-.91 4.7-1.07 8.73-.61 11.97 1.37.36.22.48.68.26 1.04zm1.49-3.26c-.27.45-.86.59-1.31.32-3.32-2.04-8.38-2.63-12.3-1.44-.51.15-1.05-.14-1.2-.66-.15-.51.14-1.05.66-1.2 4.47-1.36 10.05-.7 13.83 1.62.45.27.6 85.01.32 1.31zm.11-3.39c-3.98-2.36-10.55-2.58-14.37-1.42-.61.18-1.25-.17-1.43-.78-.18-.61.17-1.25.78-1.43 4.38-1.33 11.62-1.07 16.2 1.65.55.32.73 1.03.41 1.58-.32.55-1.03.73-1.59.4z"/></svg>
-                                Active
-                            </span>
-                        </div>
-
-                        <!-- TRACK INFO -->
-                        <div class="flex items-center gap-4 my-1.5 relative z-10">
-                            <div id="vinyl-disc" class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-accent via-red-950 to-black flex items-center justify-center shadow-lg relative border border-brand-border transition-all duration-700">
-                                <div class="w-4 h-4 rounded-full bg-brand-canvas border border-brand-border animate-ping" style="animation-duration: 2s;"></div>
+                    <section class="bento-card min-h-[315px]">
+                        <div class="card-content flex h-full flex-col justify-between gap-4">
+                            <div class="flex items-center justify-between border-b border-brand-border pb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-brand-muted">
+                                <span>[05 // Audio]</span>
+                                <span id="audio-status" class="text-brand-accent">Ready</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <div id="track-name" class="font-display font-extrabold text-sm truncate text-brand-text">Whats Up Danger (Lofi)</div>
-                                <div id="track-artist" class="text-[9px] font-mono text-brand-muted mt-1 uppercase tracking-widest truncate">Brooklyn Horizon</div>
+                            <div class="flex items-center gap-4">
+                                <div id="vinyl-disc" class="grid h-16 w-16 place-items-center rounded-2xl border border-brand-border bg-gradient-to-br from-brand-accent via-red-950 to-black shadow-lg transition-all duration-300">
+                                    <span class="h-5 w-5 rounded-full border border-brand-border bg-brand-canvas"></span>
+                                </div>
+                                <div class="min-w-0">
+                                    <p id="track-name" class="truncate font-display text-sm font-extrabold text-brand-text">Whats Up Danger (Lofi Chill)</p>
+                                    <p id="track-artist" class="mt-1 truncate font-mono text-[9px] uppercase tracking-[0.16em] text-brand-muted">Brooklyn Horizon</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- WAVE VISUALIZER -->
-                        <div class="h-9 w-full relative flex items-end justify-center gap-[2.5px] overflow-hidden my-1 z-10 bg-brand-canvas/30 rounded-xl p-1 border border-brand-border/40">
-                            <canvas id="audio-wave-canvas" class="w-full h-full"></canvas>
-                        </div>
-
-                        <!-- CONTROLS -->
-                        <div class="flex flex-col gap-2.5 relative z-10">
-                            <div class="flex items-center justify-between text-[8px] font-mono text-brand-muted">
+                            <div class="h-10 rounded-xl border border-brand-border bg-brand-canvas/30 p-1">
+                                <canvas id="audio-wave-canvas" class="h-full w-full"></canvas>
+                            </div>
+                            <audio id="dashboard-audio" crossorigin="anonymous" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"></audio>
+                            <div class="flex items-center justify-between font-mono text-[9px] text-brand-muted">
                                 <span id="audio-current">0:00</span>
                                 <span id="audio-total">0:00</span>
                             </div>
-                            
-                            <audio id="dashboard-audio" crossorigin="anonymous" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"></audio>
-
                             <div class="flex items-center justify-center gap-5">
-                                <button onclick="prevTrack()" class="p-1 text-brand-muted hover:text-brand-accent transition text-[13px] cursor-pointer">⏮</button>
-                                <button id="play-pause-btn" onclick="toggleAudio()" class="w-9.5 h-9.5 rounded-full bg-brand-text text-brand-canvas hover:scale-105 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md">▶</button>
-                                <button onclick="nextTrack()" class="p-1 text-brand-muted hover:text-brand-accent transition text-[13px] cursor-pointer">⏭</button>
+                                <button id="prev-track" type="button" class="text-sm text-brand-muted transition hover:text-brand-accent" aria-label="Previous track">Prev</button>
+                                <button id="play-pause-btn" type="button" class="grid h-10 w-10 place-items-center rounded-full bg-brand-text text-xs font-bold text-brand-canvas transition hover:scale-105" aria-label="Play or pause audio">Play</button>
+                                <button id="next-track" type="button" class="text-sm text-brand-muted transition hover:text-brand-accent" aria-label="Next track">Next</button>
                             </div>
-
-                            <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-[9px] opacity-75">🔈</span>
-                                <input id="volume-slider" type="range" min="0" max="1" step="0.05" value="0.7" oninput="adjustVolume(this.value)" class="w-full h-1 bg-brand-border rounded-lg appearance-none cursor-pointer accent-brand-accent">
-                                <span class="text-[9px] opacity-75">🔊</span>
-                            </div>
+                            <input id="volume-slider" type="range" min="0" max="1" step="0.05" value="0.7" class="h-1 w-full cursor-pointer accent-brand-accent" aria-label="Audio volume">
                         </div>
                     </section>
                 </div>
 
-                <!-- AI NEWS CHANGELOG -->
-                <section class="bento-card flex flex-col gap-4">
-                    <div class="liquid-glass-shimmer"></div>
-                    <div class="flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-3 relative z-10">
-                        <span>[06 // Web-Sensors AI Stream]</span>
-                        <span class="flex items-center gap-1 text-[9px] text-brand-accent font-bold uppercase tracking-widest"><span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-ping"></span> Live Diagnostics</span>
-                    </div>
-
-                    <div id="news-container" class="custom-scroll space-y-3.5 max-h-[250px] overflow-y-auto pr-1 relative z-10">
-                        <div class="flex flex-col items-center justify-center py-10 gap-3 text-brand-muted">
-                            <svg class="animate-spin w-6 h-6 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                            <span class="text-[10px] font-mono uppercase tracking-widest">SENSORS CONNECTING...</span>
+                <section class="bento-card">
+                    <div class="card-content space-y-4">
+                        <div class="flex items-center justify-between border-b border-brand-border pb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-brand-muted">
+                            <span>[06 // AI Stream]</span>
+                            <span id="news-status" class="text-brand-accent">Connecting</span>
+                        </div>
+                        <div id="news-container" class="custom-scroll max-h-[260px] space-y-3 overflow-y-auto pr-1">
+                            <div class="py-8 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-brand-muted">Loading AI news...</div>
                         </div>
                     </div>
                 </section>
             </div>
 
-            <!-- COLUMN 3: TERMINAL & NOTION -->
-            <div class="lg:col-span-3 flex flex-col gap-5">
-                
-                <!-- NOTION SCRATCHPAD -->
-                <section class="bento-card flex flex-col gap-4 min-h-[240px]">
-                    <div class="liquid-glass-shimmer"></div>
-                    <div class="flex justify-between items-center text-[10px] font-mono text-brand-muted uppercase tracking-wider border-b border-brand-border pb-3 relative z-10">
-                        <span>[07 // Web-Pad Notes]</span>
-                        <button onclick="openNotionDialog()" class="p-1 rounded hover:bg-brand-accent/15 hover:text-brand-accent transition text-xs cursor-pointer" title="Configure Keys">
-                            ⚙️
-                        </button>
-                    </div>
-
-                    <div class="flex-1 flex flex-col relative z-10">
-                        <textarea id="notion-notes" oninput="saveNoteLocally()" class="w-full bg-brand-canvas/30 border border-brand-border rounded-2xl p-3.5 text-xs resize-none placeholder-brand-muted/70 leading-relaxed font-sans" placeholder="Jot web notes down here... Sync will dispatch straight to your Notion Database."></textarea>
-                    </div>
-
-                    <div class="gooey-button-wrap w-full relative z-10">
-                        <button onclick="syncToNotion()" class="btn-interactive w-full py-3 px-4 rounded-xl bg-brand-accent text-white font-display font-extrabold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-accent/15 relative z-10">
-                            <!-- Liquid Blobs -->
-                            <span class="liquid-blob liquid-blob-1 -left-4 -top-4"></span>
-                            <span class="liquid-blob liquid-blob-2 -right-4 -bottom-4 bg-red-805"></span>
-                            <span class="liquid-blob liquid-blob-3 left-1/3 -bottom-6"></span>
-                            <span class="relative z-10 flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M4.586 1.836A3 3 0 0 1 7.414 0h9.172a3 3 0 0 1 2.828 1.836l3.586 10A3 3 0 0 1 20.172 15H3.828a3 3 0 0 1-2.828-3.164l3.586-10zM12 4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-4.5 9h9a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 21v-6a1.5 1.5 0 0 1 1.5-1.5z"/></svg>
-                                Dispatch Note to Notion
-                            </span>
-                        </button>
+            <div class="flex flex-col gap-5 lg:col-span-3">
+                <section class="bento-card min-h-[250px]">
+                    <div class="card-content flex h-full flex-col gap-4">
+                        <div class="flex items-center justify-between border-b border-brand-border pb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-brand-muted">
+                            <span>[07 // Notes]</span>
+                            <button id="notes-info" type="button" class="rounded-lg border border-brand-border px-2 py-1 text-brand-text transition hover:border-brand-accent hover:text-brand-accent" aria-label="Open notes information">Info</button>
+                        </div>
+                        <textarea id="dashboard-notes" class="min-h-[135px] flex-1 resize-none rounded-2xl border border-brand-border bg-brand-canvas/30 p-3.5 text-xs leading-relaxed outline-none transition placeholder:text-brand-muted/70 focus:border-brand-accent" placeholder="Jot web notes here. They save locally in this browser only."></textarea>
+                        <div class="flex gap-3">
+                            <button id="save-note" type="button" class="flex-1 rounded-xl bg-brand-accent px-4 py-3 text-xs font-extrabold text-white shadow-lg shadow-brand-accent/15 transition hover:brightness-110">Save Local Note</button>
+                            <button id="clear-note" type="button" class="rounded-xl border border-brand-border px-3 py-3 text-xs font-bold transition hover:border-brand-accent hover:text-brand-accent">Clear</button>
+                        </div>
                     </div>
                 </section>
 
-                <!-- CONSOLE TERMINAL -->
-                <section class="bento-card flex flex-col justify-between min-h-[300px] flex-1 font-mono">
-                    <div class="liquid-glass-shimmer"></div>
-                    <div class="w-full flex justify-between items-center text-[10px] text-brand-muted uppercase tracking-wider border-b border-brand-border pb-3 mb-2.5 relative z-10">
-                        <span>[08 // Web-CLI Console]</span>
-                        <span class="text-brand-accent font-bold glow-accent animate-pulse">ACTIVE</span>
+                <section class="bento-card min-h-[320px] flex-1 font-mono">
+                    <div class="card-content flex h-full flex-col">
+                        <div class="mb-3 flex items-center justify-between border-b border-brand-border pb-3 text-[10px] uppercase tracking-[0.16em] text-brand-muted">
+                            <span>[08 // Console]</span>
+                            <span class="text-brand-accent">Active</span>
+                        </div>
+                        <div id="terminal-log" class="custom-scroll mb-4 max-h-[230px] flex-1 space-y-2 overflow-y-auto pr-1 text-[11px] leading-relaxed text-brand-muted">
+                            <div class="text-brand-accent">SPIDEY_NET active. Type <span class="font-bold">/help</span> for console controls.</div>
+                            <div class="text-brand-text">abhinav@morales:~$ web-sync</div>
+                            <div>Static dashboard online. Local widgets ready.</div>
+                        </div>
+                        <form id="terminal-form" class="flex items-center gap-2 border-t border-brand-border pt-4">
+                            <span class="text-brand-accent">~</span>
+                            <input id="terminal-input" type="text" autocomplete="off" class="min-w-0 flex-1 bg-transparent p-0 text-[11px] text-brand-text outline-none" placeholder="run diagnostics...">
+                        </form>
                     </div>
-
-                    <div id="terminal-log" class="custom-scroll flex-1 text-[11px] leading-relaxed text-brand-muted overflow-y-auto max-h-[220px] mb-3 space-y-2 pr-1 relative z-10">
-                        <div class="text-[10px] text-brand-accent">SPIDEY_NET ACTIVE. Type <span class="font-bold">/help</span> for console guidelines.</div>
-                        <div class="text-brand-text">abhinav@morales:~$ web-sync</div>
-                        <div>Brooklyn core active. Deploy terminal prompts to trigger widget parameters.</div>
-                    </div>
-
-                    <form onsubmit="handleTerminalCommand(event)" class="relative z-10 flex items-center gap-1.5 border-t border-brand-border pt-4">
-                        <span class="text-brand-accent text-[11.5px] font-bold">~</span>
-                        <input id="terminal-input" type="text" autocomplete="off" class="flex-1 bg-transparent border-none text-[11.5px] text-brand-text focus:ring-0 focus:outline-none p-0" placeholder="run diagnostics...">
-                    </form>
                 </section>
             </div>
-
         </main>
     </div>
 
-    <!-- NATIVE DIALOG MODAL -->
-    <dialog id="notion-dialog" class="glass max-w-md w-full mx-auto rounded-[2rem] p-6 border border-brand-border shadow-2xl backdrop:bg-black/75 backdrop:backdrop-blur-md">
-        <div class="flex flex-col gap-4">
-            <div class="flex justify-between items-center border-b border-brand-border pb-3.5">
-                <h3 class="font-display font-extrabold text-base text-brand-text">Notion Integration Key</h3>
-                <button onclick="closeNotionDialog()" class="text-brand-muted hover:text-brand-text transition text-[15px] cursor-pointer">✕</button>
+    <dialog id="notes-dialog" class="w-[min(92vw,28rem)] rounded-[2rem] border border-brand-border bg-brand-card p-6 text-brand-text shadow-2xl">
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-brand-border pb-3">
+                <h3 class="font-display text-lg font-extrabold">Notes Storage</h3>
+                <button id="close-notes-dialog" type="button" class="rounded-lg border border-brand-border px-2 py-1 text-sm transition hover:border-brand-accent hover:text-brand-accent" aria-label="Close notes information">Close</button>
             </div>
-            
-            <p class="text-xs text-brand-muted leading-relaxed">
-                Connect your scratchpad notes directly to a Notion Database page. Tokens will be cached strictly inside your local browser memory space.
-            </p>
-
-            <div class="space-y-4 my-2.5 text-xs">
-                <div class="flex flex-col gap-1.5">
-                    <label class="font-mono text-[10px] text-brand-muted uppercase">Internal Integration Token</label>
-                    <input id="notion-token" type="password" required class="dialog-input w-full bg-brand-canvas/50 border border-brand-border rounded-xl p-3 font-mono text-[11px]" placeholder="secret_...">
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="font-mono text-[10px] text-brand-muted uppercase">Database ID Code</label>
-                    <input id="notion-db-id" type="text" required class="dialog-input w-full bg-brand-canvas/50 border border-brand-border rounded-xl p-3 font-mono text-[11px]" placeholder="e.g. 9b128...">
-                </div>
-            </div>
-
-            <div class="flex gap-3 justify-end pt-3 border-t border-brand-border">
-                <button onclick="closeNotionDialog()" class="py-2 px-4.5 rounded-xl border border-brand-border hover:bg-brand-border/10 transition text-xs font-semibold cursor-pointer">
-                    Cancel
-                </button>
-                <button onclick="saveNotionConfig()" class="py-2 px-4.5 rounded-xl bg-brand-accent text-white hover:bg-brand-accent/90 transition text-xs font-extrabold shadow-lg shadow-brand-accent/20 cursor-pointer">
-                    Save Key
-                </button>
-            </div>
+            <p class="text-sm leading-relaxed text-brand-muted">Notes are saved only in this browser with localStorage. The old browser-side Notion proxy sync was removed because sending private tokens through a public proxy is not a safe default for this repo.</p>
         </div>
     </dialog>
 
-    <!-- JAVASCRIPT SYSTEM ENGINE -->
     <script>
-        // --- 1. SPOTLIGHT MOUSE TRACKING OVERLAY (LINEAR STYLE) ---
-        function initSpotlights() {
-            document.querySelectorAll('.bento-card').forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
-                });
+        const $ = (selector) => document.querySelector(selector);
+        const storage = window.localStorage;
+
+        document.querySelectorAll('.bento-card').forEach((card) => {
+            card.addEventListener('mousemove', (event) => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--mouse-x', `${event.clientX - rect.left}px`);
+                card.style.setProperty('--mouse-y', `${event.clientY - rect.top}px`);
             });
-        }
-        initSpotlights();
+        });
 
-        // --- 2. DARK & LIGHT MODE TOGGLES ---
-        function toggleTheme() {
-            const body = document.body;
-            const bgImage = document.getElementById('spiderman-bg');
-            const glassImage = document.getElementById('ribbed-glass-bg');
-            if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                document.documentElement.classList.add('dark');
-                if (bgImage) bgImage.style.opacity = '0.08';
-                if (glassImage) glassImage.style.opacity = '0.3';
-            } else {
-                body.classList.add('light-theme');
-                document.documentElement.classList.remove('dark');
-                if (bgImage) bgImage.style.opacity = '0.2';
-                if (glassImage) glassImage.style.opacity = '0.55';
-            }
-        }
-        // Force dark default
-        document.documentElement.classList.add('dark');
+        $('#theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            document.documentElement.classList.toggle('dark', !document.body.classList.contains('light-theme'));
+            $('#spiderman-bg').style.opacity = document.body.classList.contains('light-theme') ? '0.18' : '0.08';
+            $('#ribbed-glass-bg').style.opacity = document.body.classList.contains('light-theme') ? '0.5' : '0.3';
+        });
 
-        // --- 3. SYSTEM DISPLAY CLOCK ---
         function updateClock() {
             const now = new Date();
-            let hours = now.getHours().toString().padStart(2, '0');
-            let minutes = now.getMinutes().toString().padStart(2, '0');
-            
-            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-            let dateString = now.toLocaleDateString('en-US', options).replace(',', ' ·');
-            
-            let currentHour = now.getHours();
-            let greeting = "evening";
-            if (currentHour < 12) greeting = "morning";
-            else if (currentHour < 17) greeting = "afternoon";
-
-            document.getElementById('time-display').innerHTML = `${hours}<span class="text-brand-accent animate-pulse font-normal">:</span>${minutes}`;
-            document.getElementById('date-display').innerText = dateString;
-            document.getElementById('greeting-display').innerText = greeting;
-            
-            if (Math.random() > 0.8) {
-                const net = 210 + Math.floor(Math.random() * 40);
-                const ping = 10 + Math.floor(Math.random() * 5);
-                document.getElementById('header-net').innerText = `NET_EST: ${net}MB/S`;
-                document.getElementById('header-ping').innerText = `PING_RATING: ${ping}MS`;
-            }
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const greeting = now.getHours() < 12 ? 'morning' : now.getHours() < 17 ? 'afternoon' : 'evening';
+            $('#time-display').textContent = `${hours}:${minutes}`;
+            $('#greeting-display').textContent = greeting;
+            $('#date-display').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // --- 4. GLOWING SPIDER-WEB CURSOR ENGINE ---
-        const canvas = document.getElementById('cursor-canvas');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        const cursorCanvas = $('#cursor-canvas');
+        const cursorCtx = cursorCanvas.getContext('2d');
+        const particles = [];
+        let lastMouse = { x: null, y: null };
 
-        const mouse = { x: null, y: null, dx: 0, dy: 0 };
+        function resizeCursorCanvas() {
+            cursorCanvas.width = window.innerWidth;
+            cursorCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCursorCanvas);
+        resizeCursorCanvas();
 
         window.addEventListener('mousemove', (event) => {
-            mouse.dx = event.x - mouse.x;
-            mouse.dy = event.y - mouse.y;
-            mouse.x = event.x;
-            mouse.y = event.y;
-            
-            if (particlesArray.length < 40) {
-                particlesArray.push(new Particle(mouse.x, mouse.y, mouse.dx, mouse.dy));
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const dx = lastMouse.x === null ? 0 : event.clientX - lastMouse.x;
+            const dy = lastMouse.y === null ? 0 : event.clientY - lastMouse.y;
+            lastMouse = { x: event.clientX, y: event.clientY };
+            if (particles.length < 34) {
+                particles.push({ x: event.clientX, y: event.clientY, vx: dx * 0.04 + Math.random() - 0.5, vy: dy * 0.04 + Math.random() - 0.5, life: 1, size: Math.random() * 2 + 1 });
             }
         });
 
-        class Particle {
-            constructor(x, y, dx, dy) {
-                this.x = x;
-                this.y = y;
-                this.size = Math.random() * 2 + 1.5; 
-                this.speedX = (Math.random() * 1.0 - 0.5) + (dx * 0.05); 
-                this.speedY = (Math.random() * 1.0 - 0.5) + (dy * 0.05);
-                this.life = 1.0; 
-                this.decay = Math.random() * 0.015 + 0.01;
-            }
-            
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.speedX *= 0.98;
-                this.speedY *= 0.98;
-                this.life -= this.decay;
-                if (this.size > 0.2) this.size -= 0.02;
-            }
-            
-            draw() {
-                ctx.globalAlpha = Math.max(this.life, 0);
-                ctx.fillStyle = '#ff1722';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1;
-            }
-        }
-
-        function drawSpiderWeb() {
-            for (let i = 0; i < particlesArray.length; i++) {
-                for (let j = i + 1; j < particlesArray.length; j++) {
-                    const dx = particlesArray[i].x - particlesArray[j].x;
-                    const dy = particlesArray[i].y - particlesArray[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 85) {
-                        const alpha = 0.22 * (1 - dist / 85) * Math.min(particlesArray[i].life, particlesArray[j].life);
-                        ctx.strokeStyle = `rgba(255, 23, 34, ${alpha})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-                        ctx.stroke();
+        function animateCursor() {
+            cursorCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= 0.97;
+                p.vy *= 0.97;
+                p.life -= 0.018;
+                cursorCtx.globalAlpha = Math.max(p.life, 0);
+                cursorCtx.fillStyle = '#ff1722';
+                cursorCtx.beginPath();
+                cursorCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                cursorCtx.fill();
+                if (p.life <= 0) particles.splice(index, 1);
+            });
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.hypot(dx, dy);
+                    if (distance < 85) {
+                        cursorCtx.globalAlpha = 0.22 * (1 - distance / 85) * Math.min(particles[i].life, particles[j].life);
+                        cursorCtx.strokeStyle = '#ff1722';
+                        cursorCtx.lineWidth = 0.5;
+                        cursorCtx.beginPath();
+                        cursorCtx.moveTo(particles[i].x, particles[i].y);
+                        cursorCtx.lineTo(particles[j].x, particles[j].y);
+                        cursorCtx.stroke();
                     }
                 }
             }
+            cursorCtx.globalAlpha = 1;
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        let pomoInterval = null;
+        let pomoMode = 'Focus';
+        let pomoSecondsLeft = 25 * 60;
+        let pomoRunning = false;
+        const pomoDurations = { Focus: 25 * 60, Break: 5 * 60 };
+
+        function renderPomodoro() {
+            const minutes = Math.floor(pomoSecondsLeft / 60).toString().padStart(2, '0');
+            const seconds = (pomoSecondsLeft % 60).toString().padStart(2, '0');
+            const radius = 68;
+            const circumference = 2 * Math.PI * radius;
+            const percent = pomoSecondsLeft / pomoDurations[pomoMode];
+            $('#pomo-time').textContent = `${minutes}:${seconds}`;
+            $('#pomo-mode').textContent = pomoMode;
+            $('#pomo-circle').style.strokeDasharray = `${circumference}`;
+            $('#pomo-circle').style.strokeDashoffset = `${circumference - percent * circumference}`;
+            $('#pomo-toggle').textContent = pomoRunning ? 'Pause Session' : `Start ${pomoMode}`;
         }
 
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-                if (particlesArray[i].life <= 0 || particlesArray[i].size <= 0.2) {
-                    particlesArray.splice(i, 1);
-                    i--;
-                }
-            }
-            drawSpiderWeb();
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
-
-        // --- 5. POMODORO SYSTEM (WEB AUDIO SYNTH INCLUDED) ---
-        let pomoInterval;
-        let pomoMinutes = 25;
-        let pomoSeconds = 0;
-        let isPomoRunning = false;
-        let currentPomoMode = 'Focus'; 
-
-        const pomoCircle = document.getElementById('pomo-circle');
-        const pomoTimeDisplay = document.getElementById('pomo-time');
-        const pomoModeDisplay = document.getElementById('pomo-mode');
-        const pomoToggleBtn = document.getElementById('pomo-toggle');
-
-        function triggerBuzzer() {
+        function chime() {
             try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                const playChime = (freq, start, duration) => {
-                    const osc = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    
-                    osc.type = 'triangle';
-                    osc.frequency.value = freq;
-                    
-                    gainNode.gain.setValueAtTime(0.2, start);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, start + duration);
-                    
-                    osc.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    
-                    osc.start(start);
-                    osc.stop(start + duration);
-                };
-                
-                playChime(659.25, audioCtx.currentTime, 0.3); // E5
-                playChime(987.77, audioCtx.currentTime + 0.12, 0.45); // B5
-            } catch (e) {
-                console.error("Synthesizer blocked:", e);
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                [659.25, 987.77].forEach((frequency, index) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    oscillator.type = 'triangle';
+                    oscillator.frequency.value = frequency;
+                    gain.gain.setValueAtTime(0.18, audioContext.currentTime + index * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4 + index * 0.12);
+                    oscillator.connect(gain);
+                    gain.connect(audioContext.destination);
+                    oscillator.start(audioContext.currentTime + index * 0.12);
+                    oscillator.stop(audioContext.currentTime + 0.45 + index * 0.12);
+                });
+            } catch (error) {
+                console.warn('Audio chime unavailable', error);
             }
-        }
-
-        function setPomoProgress(percent) {
-            const radius = 64;
-            const circumference = 2 * Math.PI * radius; 
-            const offset = circumference - (percent / 100) * circumference;
-            pomoCircle.style.strokeDashoffset = offset;
-        }
-
-        function updatePomoDisplay() {
-            let m = pomoMinutes.toString().padStart(2, '0');
-            let s = pomoSeconds.toString().padStart(2, '0');
-            pomoTimeDisplay.innerText = `${m}:${s}`;
-            
-            let totalSecs = currentPomoMode === 'Focus' ? 25 * 60 : 5 * 60;
-            let currentSecs = pomoMinutes * 60 + pomoSeconds;
-            let percentage = (currentSecs / totalSecs) * 100;
-            setPomoProgress(percentage);
         }
 
         function togglePomodoro() {
-            if (isPomoRunning) {
+            if (pomoRunning) {
                 clearInterval(pomoInterval);
-                isPomoRunning = false;
-                pomoToggleBtn.innerText = "Resume Session";
-                pomoToggleBtn.classList.remove('bg-red-700');
-                pomoToggleBtn.classList.add('bg-brand-accent');
-            } else {
-                isPomoRunning = true;
-                pomoToggleBtn.innerText = "Pause Session";
-                pomoToggleBtn.classList.remove('bg-brand-accent');
-                pomoToggleBtn.classList.add('bg-red-700');
-                
-                pomoInterval = setInterval(() => {
-                    if (pomoSeconds === 0) {
-                        if (pomoMinutes === 0) {
-                            clearInterval(pomoInterval);
-                            triggerBuzzer();
-                            setTimeout(() => {
-                                alert(`${currentPomoMode} cycle completed!`);
-                                switchPomodoroMode();
-                            }, 50);
-                            return;
-                        }
-                        pomoMinutes--;
-                        pomoSeconds = 59;
-                    } else {
-                        pomoSeconds--;
-                    }
-                    updatePomoDisplay();
-                }, 1000);
+                pomoRunning = false;
+                renderPomodoro();
+                return;
             }
+            pomoRunning = true;
+            pomoInterval = setInterval(() => {
+                if (pomoSecondsLeft <= 0) {
+                    clearInterval(pomoInterval);
+                    pomoRunning = false;
+                    chime();
+                    appendToLog('pomodoro', `${pomoMode} cycle complete.`);
+                    switchPomodoroMode();
+                    return;
+                }
+                pomoSecondsLeft -= 1;
+                renderPomodoro();
+            }, 1000);
+            renderPomodoro();
         }
 
         function resetPomodoro() {
             clearInterval(pomoInterval);
-            isPomoRunning = false;
-            pomoMinutes = currentPomoMode === 'Focus' ? 25 : 5;
-            pomoSeconds = 0;
-            pomoToggleBtn.innerText = `Start ${currentPomoMode}`;
-            pomoToggleBtn.classList.remove('bg-red-700');
-            pomoToggleBtn.classList.add('bg-brand-accent');
-            updatePomoDisplay();
+            pomoRunning = false;
+            pomoSecondsLeft = pomoDurations[pomoMode];
+            renderPomodoro();
         }
 
         function switchPomodoroMode() {
             clearInterval(pomoInterval);
-            isPomoRunning = false;
-            if (currentPomoMode === 'Focus') {
-                currentPomoMode = 'Break';
-                pomoMinutes = 5;
-                pomoModeDisplay.innerText = "BREAK";
-                pomoModeDisplay.className = "text-indigo-400 font-bold tracking-widest";
-                pomoCircle.classList.remove('text-brand-accent');
-                pomoCircle.classList.add('text-indigo-400');
-                pomoCircle.style.filter = "drop-shadow(0 0 5px rgba(99, 102, 241, 0.5))";
-            } else {
-                currentPomoMode = 'Focus';
-                pomoMinutes = 25;
-                pomoModeDisplay.innerText = "FOCUS";
-                pomoModeDisplay.className = "text-brand-accent font-bold tracking-widest glow-accent";
-                pomoCircle.classList.remove('text-indigo-400');
-                pomoCircle.classList.add('text-brand-accent');
-                pomoCircle.style.filter = "drop-shadow(0 0 5px rgba(255, 23, 34, 0.5))";
-            }
-            pomoSeconds = 0;
-            pomoToggleBtn.innerText = `Start ${currentPomoMode}`;
-            pomoToggleBtn.classList.remove('bg-red-700');
-            pomoToggleBtn.classList.add('bg-brand-accent');
-            updatePomoDisplay();
+            pomoRunning = false;
+            pomoMode = pomoMode === 'Focus' ? 'Break' : 'Focus';
+            pomoSecondsLeft = pomoDurations[pomoMode];
+            renderPomodoro();
         }
-        updatePomoDisplay();
 
-        // --- 6. AUDIO VISUALIZER ---
-        const audio = document.getElementById('dashboard-audio');
-        const playBtn = document.getElementById('play-pause-btn');
-        const vinyl = document.getElementById('vinyl-disc');
-        const waveCanvas = document.getElementById('audio-wave-canvas');
-        const waveCtx = waveCanvas.getContext('2d');
-        
-        let waveInterval;
-        let activeWaveBars = [];
+        $('#pomo-toggle').addEventListener('click', togglePomodoro);
+        $('#pomo-reset').addEventListener('click', resetPomodoro);
+        $('#pomo-switch').addEventListener('click', switchPomodoroMode);
+        renderPomodoro();
 
-        const playlist = [
-            { name: "Whats Up Danger (Lofi Chill)", artist: "Brooklyn Horizon", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
-            { name: "Sunflower Study Beats", artist: "Morales Sound Lab", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
-            { name: "Spider-Verse Coding Flow", artist: "Alchemax Ambient Beats", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" }
+        const audio = $('#dashboard-audio');
+        const tracks = [
+            { name: 'Whats Up Danger (Lofi Chill)', artist: 'Brooklyn Horizon', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+            { name: 'Sunflower Study Beats', artist: 'Morales Sound Lab', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
+            { name: 'Coding Flow', artist: 'Alchemax Ambient', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' }
         ];
-        let currentTrackIdx = 0;
+        let trackIndex = 0;
+        let audioPlaying = false;
+        const waveCanvas = $('#audio-wave-canvas');
+        const waveCtx = waveCanvas.getContext('2d');
+        let waveFrame = null;
+        let waveBars = [];
 
         function resizeWaveCanvas() {
             waveCanvas.width = waveCanvas.parentElement.clientWidth;
             waveCanvas.height = waveCanvas.parentElement.clientHeight;
-            
-            activeWaveBars = [];
-            const barCount = Math.floor(waveCanvas.width / 5.5);
-            for (let i = 0; i < barCount; i++) {
-                activeWaveBars.push({
-                    x: i * 5.5,
-                    targetH: 2,
-                    currentH: 2,
-                    speed: 0.08 + Math.random() * 0.12
-                });
-            }
+            waveBars = Array.from({ length: Math.max(8, Math.floor(waveCanvas.width / 6)) }, (_, index) => ({ x: index * 6, h: 2, target: 2, speed: 0.08 + Math.random() * 0.12 }));
         }
         window.addEventListener('resize', resizeWaveCanvas);
         resizeWaveCanvas();
 
-        function loadTrack(idx) {
-            audio.src = playlist[idx].src;
-            document.getElementById('track-name').innerText = playlist[idx].name;
-            document.getElementById('track-artist').innerText = playlist[idx].artist;
+        function renderWave() {
+            waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+            waveCtx.fillStyle = '#ff1722';
+            waveBars.forEach((bar) => {
+                bar.target = audioPlaying ? 4 + Math.random() * Math.max(6, waveCanvas.height - 6) : 3;
+                bar.h += (bar.target - bar.h) * bar.speed;
+                waveCtx.beginPath();
+                waveCtx.roundRect(bar.x, waveCanvas.height - bar.h, 3.5, bar.h, 2);
+                waveCtx.fill();
+            });
+            waveFrame = requestAnimationFrame(renderWave);
+        }
+        renderWave();
+
+        function loadTrack(index) {
+            const track = tracks[index];
+            audio.src = track.src;
+            $('#track-name').textContent = track.name;
+            $('#track-artist').textContent = track.artist;
+            $('#audio-status').textContent = 'Ready';
             audio.load();
-            if (isAudioPlaying) {
-                audio.play();
-            }
+            if (audioPlaying) playAudio();
         }
 
-        let isAudioPlaying = false;
-        function toggleAudio() {
-            if (audio.paused) {
-                audio.play();
-                isAudioPlaying = true;
-                playBtn.innerText = "⏸";
-                vinyl.classList.add('animate-spin');
-                vinyl.classList.remove('rounded-2xl');
-                vinyl.classList.add('rounded-full');
-                startWaveAnimation();
-            } else {
-                audio.pause();
-                isAudioPlaying = false;
-                playBtn.innerText = "▶";
-                vinyl.classList.remove('animate-spin');
-                vinyl.classList.remove('rounded-full');
-                vinyl.classList.add('rounded-2xl');
-                stopWaveAnimation();
-            }
-        }
-
-        function adjustVolume(val) {
-            audio.volume = val;
-        }
-
-        function prevTrack() {
-            currentTrackIdx = (currentTrackIdx - 1 + playlist.length) % playlist.length;
-            loadTrack(currentTrackIdx);
-        }
-
-        function nextTrack() {
-            currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
-            loadTrack(currentTrackIdx);
-        }
-
-        audio.addEventListener('timeupdate', () => {
-            const cur = audio.currentTime;
-            const dur = audio.duration || 0;
-            
-            let curMin = Math.floor(cur / 60).toString();
-            let curSec = Math.floor(cur % 60).toString().padStart(2, '0');
-            let durMin = Math.floor(dur / 60).toString();
-            let durSec = Math.floor(dur % 60).toString().padStart(2, '0');
-            
-            document.getElementById('audio-current').innerText = `${curMin}:${curSec}`;
-            document.getElementById('audio-total').innerText = `${durMin}:${durSec}`;
-        });
-
-        audio.addEventListener('ended', () => {
-            nextTrack();
-        });
-
-        function startWaveAnimation() {
-            if (waveInterval) cancelAnimationFrame(waveInterval);
-            
-            function render() {
-                waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
-                waveCtx.fillStyle = '#ff1722';
-
-                activeWaveBars.forEach(bar => {
-                    if (isAudioPlaying) {
-                        bar.targetH = 2 + Math.floor(Math.random() * (waveCanvas.height - 4));
-                    } else {
-                        bar.targetH = 2;
-                    }
-                    bar.currentH += (bar.targetH - bar.currentH) * bar.speed;
-                    
-                    waveCtx.beginPath();
-                    waveCtx.roundRect(bar.x, waveCanvas.height - bar.currentH, 3.5, bar.currentH, 2.5);
-                    waveCtx.fill();
-                });
-
-                waveInterval = requestAnimationFrame(render);
-            }
-            render();
-        }
-
-        function stopWaveAnimation() {
-            startWaveAnimation();
-        }
-        stopWaveAnimation();
-
-        // --- 7. DYNAMIC RSS FEED OVERHAUL ---
-        async function fetchAINews() {
-            const newsContainer = document.getElementById('news-container');
-            const rssUrl = "https://techcrunch.com/category/artificial-intelligence/feed/";
-            const fetchUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-            
+        async function playAudio() {
             try {
-                const response = await fetch(fetchUrl);
-                const data = await response.json();
-                
-                if (data.status === 'ok') {
-                    newsContainer.innerHTML = '';
-                    const items = data.items.slice(0, 4);
-                    
-                    const tags = ['SENSORS_ACTIVE', 'WEB_GRID_LINK', 'PORTAL_ESTABLISHED', 'ALCHEMAX_UPDATE'];
-
-                    items.forEach((item, index) => {
-                        const date = new Date(item.pubDate);
-                        const timeStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + " · " + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                        
-                        const tag = tags[index % tags.length];
-                        
-                        const newsEl = document.createElement('a');
-                        newsEl.href = item.link;
-                        newsEl.target = "_blank";
-                        newsEl.className = "news-item bento-card block p-5 rounded-2xl flex flex-col gap-2.5 transition border border-brand-border hover:border-brand-accent/25 hover:bg-brand-accent/5";
-                        newsEl.innerHTML = `
-                            <div class="liquid-glass-shimmer"></div>
-                            <div class="flex flex-wrap items-center justify-between gap-2 relative z-10">
-                                <span class="text-[9px] font-mono text-brand-accent font-bold tracking-widest bg-brand-accent/15 px-2 py-0.5 rounded uppercase">${tag}</span>
-                                <span class="text-[9px] font-mono text-brand-muted uppercase">${timeStr}</span>
-                            </div>
-                            <h4 class="text-sm font-display font-bold text-brand-text leading-snug hover:text-brand-accent transition relative z-10">${item.title}</h4>
-                            <p class="text-xs text-brand-muted line-clamp-2 leading-relaxed font-sans relative z-10">${item.description.replace(/<[^>]*>/g, '')}</p>
-                            <div class="flex items-center gap-1 text-[9px] font-mono text-brand-accent font-semibold tracking-wider uppercase mt-1 relative z-10">
-                                Read stream <span>→</span>
-                            </div>
-                        `;
-                        newsContainer.appendChild(newsEl);
-                    });
-                    initSpotlights();
-                } else {
-                    throw new Error("RSS parse error");
-                }
-            } catch (err) {
-                console.error("AI News Fetch Error:", err);
-                renderBackupNews();
+                await audio.play();
+                audioPlaying = true;
+                $('#play-pause-btn').textContent = 'Pause';
+                $('#audio-status').textContent = 'Playing';
+                $('#vinyl-disc').classList.add('rounded-full', 'animate-spin');
+                $('#vinyl-disc').classList.remove('rounded-2xl');
+            } catch (error) {
+                audioPlaying = false;
+                $('#audio-status').textContent = 'Blocked';
+                appendToLog('audio', 'Playback was blocked or unavailable.', true);
             }
+        }
+
+        function pauseAudio() {
+            audio.pause();
+            audioPlaying = false;
+            $('#play-pause-btn').textContent = 'Play';
+            $('#audio-status').textContent = 'Paused';
+            $('#vinyl-disc').classList.remove('rounded-full', 'animate-spin');
+            $('#vinyl-disc').classList.add('rounded-2xl');
+        }
+
+        $('#play-pause-btn').addEventListener('click', () => audio.paused ? playAudio() : pauseAudio());
+        $('#prev-track').addEventListener('click', () => { trackIndex = (trackIndex - 1 + tracks.length) % tracks.length; loadTrack(trackIndex); });
+        $('#next-track').addEventListener('click', () => { trackIndex = (trackIndex + 1) % tracks.length; loadTrack(trackIndex); });
+        $('#volume-slider').addEventListener('input', (event) => { audio.volume = event.target.value; });
+        audio.volume = $('#volume-slider').value;
+        audio.addEventListener('ended', () => { trackIndex = (trackIndex + 1) % tracks.length; loadTrack(trackIndex); });
+        audio.addEventListener('error', () => { $('#audio-status').textContent = 'Unavailable'; appendToLog('audio', 'Track source failed to load.', true); });
+        audio.addEventListener('timeupdate', () => {
+            const current = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+            const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+            $('#audio-current').textContent = formatTime(current);
+            $('#audio-total').textContent = formatTime(duration);
+        });
+
+        function formatTime(value) {
+            const minutes = Math.floor(value / 60);
+            const seconds = Math.floor(value % 60).toString().padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        }
+
+        function createNewsItem(item) {
+            const card = document.createElement(item.link ? 'a' : 'div');
+            if (item.link) {
+                card.href = item.link;
+                card.target = '_blank';
+                card.rel = 'noreferrer';
+            }
+            card.className = 'block rounded-2xl border border-brand-border bg-brand-canvas/25 p-4 transition hover:border-brand-accent/50';
+            const meta = document.createElement('div');
+            meta.className = 'mb-2 flex flex-wrap items-center justify-between gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-brand-muted';
+            const tag = document.createElement('span');
+            tag.className = 'rounded bg-brand-accent/15 px-2 py-1 font-bold text-brand-accent';
+            tag.textContent = item.tag || 'AI_UPDATE';
+            const time = document.createElement('span');
+            time.textContent = item.time || 'Fallback';
+            meta.append(tag, time);
+            const title = document.createElement('h3');
+            title.className = 'font-display text-sm font-extrabold leading-snug text-brand-text';
+            title.textContent = item.title;
+            const desc = document.createElement('p');
+            desc.className = 'mt-2 text-xs leading-relaxed text-brand-muted';
+            desc.textContent = item.desc;
+            card.append(meta, title, desc);
+            return card;
         }
 
         function renderBackupNews() {
-            const newsContainer = document.getElementById('news-container');
-            newsContainer.innerHTML = '';
-            
-            const backupItems = [
-                { title: "Spider-Web Haptic Integration Completed", desc: "Brooklyn labs achieve bio-mechanic sync between particle shooters and neural mapping indices.", tag: "SENSORS_ACTIVE", time: "1h ago" },
-                { title: "Web Grid Link Protocol Established", desc: "Multiverse transport corridors stabilized for safe query transfers across dimensional routing pathways.", tag: "WEB_GRID_LINK", time: "3h ago" },
-                { title: "Alchemax Ramps Production on Next-Gen Acceleration Core", desc: "Deca-core processing nodes optimized to provide raw local computation rates.", tag: "ALCHEMAX_UPDATE", time: "6h ago" }
+            $('#news-status').textContent = 'Fallback';
+            const items = [
+                { title: 'Local dashboard cleanup complete', desc: 'The stream is using offline fallback cards because the RSS feed is unavailable.', tag: 'LOCAL', time: 'Now' },
+                { title: 'Focus tools ready', desc: 'Pomodoro, notes, audio, and terminal widgets continue working without the news network request.', tag: 'SYSTEM', time: 'Ready' },
+                { title: 'External services are optional', desc: 'The dashboard is designed to stay usable even when feeds, fonts, or audio sources fail.', tag: 'RESILIENT', time: 'Static' }
             ];
+            $('#news-container').replaceChildren(...items.map(createNewsItem));
+        }
 
-            backupItems.forEach((item) => {
-                const newsEl = document.createElement('div');
-                newsEl.className = "news-item bento-card p-5 rounded-2xl flex flex-col gap-2.5 border border-brand-border";
-                newsEl.innerHTML = `
-                    <div class="liquid-glass-shimmer"></div>
-                    <div class="flex items-center justify-between relative z-10">
-                        <span class="text-[9px] font-mono text-brand-accent font-bold tracking-widest bg-brand-accent/15 px-2 py-0.5 rounded">${item.tag}</span>
-                        <span class="text-[9px] font-mono text-brand-muted uppercase">${item.time}</span>
-                    </div>
-                    <h4 class="text-sm font-display font-bold text-brand-text leading-snug relative z-10">${item.title}</h4>
-                    <p class="text-xs text-brand-muted leading-relaxed font-sans relative z-10">${item.desc}</p>
-                `;
-                newsContainer.appendChild(newsEl);
-            });
-            initSpotlights();
+        async function fetchAINews() {
+            const feedUrl = 'https://techcrunch.com/category/artificial-intelligence/feed/';
+            const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('RSS request failed');
+                const data = await response.json();
+                if (data.status !== 'ok' || !Array.isArray(data.items)) throw new Error('RSS parse failed');
+                const items = data.items.slice(0, 4).map((item, index) => {
+                    const date = new Date(item.pubDate);
+                    return {
+                        title: item.title || 'Untitled update',
+                        desc: (item.description || '').replace(/<[^>]*>/g, '').slice(0, 180),
+                        link: item.link,
+                        tag: ['AI_STREAM', 'MODEL_NEWS', 'RESEARCH', 'INDUSTRY'][index % 4],
+                        time: Number.isNaN(date.valueOf()) ? 'Live' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    };
+                });
+                $('#news-status').textContent = 'Live';
+                $('#news-container').replaceChildren(...items.map(createNewsItem));
+            } catch (error) {
+                console.warn('AI news unavailable', error);
+                renderBackupNews();
+            }
         }
         fetchAINews();
 
-        // --- 8. NOTION DIALOG MODAL CONTROLS (NATIVE DISMISS & PRE-INTERACTION VALIDATION) ---
-        const notepad = document.getElementById('notion-notes');
-        const dialog = document.getElementById('notion-dialog');
-        const tokenInput = document.getElementById('notion-token');
-        const dbIdInput = document.getElementById('notion-db-id');
-
-        notepad.value = localStorage.getItem('abhinav_notes') || '';
-
-        function saveNoteLocally() {
-            localStorage.setItem('abhinav_notes', notepad.value);
-        }
-
-        function openNotionDialog() {
-            tokenInput.value = localStorage.getItem('notion_token') || '';
-            dbIdInput.value = localStorage.getItem('notion_db_id') || '';
-            dialog.showModal();
-        }
-
-        function closeNotionDialog() {
-            dialog.close();
-        }
-
-        // Native Light-Dismiss (Clicking backdrop dismisses dialog)
-        dialog.addEventListener('click', (e) => {
-            const rect = dialog.getBoundingClientRect();
-            if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-                dialog.close();
-            }
+        const notes = $('#dashboard-notes');
+        notes.value = storage.getItem('abhinav_notes') || '';
+        notes.addEventListener('input', () => storage.setItem('abhinav_notes', notes.value));
+        $('#save-note').addEventListener('click', () => {
+            storage.setItem('abhinav_notes', notes.value);
+            appendToLog('notes save', 'Local note saved in this browser.');
+        });
+        $('#clear-note').addEventListener('click', () => {
+            notes.value = '';
+            storage.removeItem('abhinav_notes');
+            appendToLog('notes clear', 'Local note cleared.');
+        });
+        $('#notes-info').addEventListener('click', () => $('#notes-dialog').showModal());
+        $('#close-notes-dialog').addEventListener('click', () => $('#notes-dialog').close());
+        $('#notes-dialog').addEventListener('click', (event) => {
+            const rect = $('#notes-dialog').getBoundingClientRect();
+            const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+            if (outside) $('#notes-dialog').close();
         });
 
-        function saveNotionConfig() {
-            // Check form validity before saving
-            if (tokenInput.checkValidity() && dbIdInput.checkValidity()) {
-                localStorage.setItem('notion_token', tokenInput.value);
-                localStorage.setItem('notion_db_id', dbIdInput.value);
-                closeNotionDialog();
-                alert("Notion Configuration Saved Successfully!");
-            } else {
-                alert("Please fill out both credentials inputs correctly.");
-            }
+        const terminalLog = $('#terminal-log');
+        function appendToLog(command, response, isError = false) {
+            const prompt = document.createElement('div');
+            prompt.className = 'mt-2 font-bold text-brand-text';
+            prompt.textContent = `abhinav@morales:~$ ${command}`;
+            const line = document.createElement('div');
+            line.className = isError ? 'text-red-400' : 'text-brand-muted';
+            line.textContent = response;
+            terminalLog.append(prompt, line);
+            terminalLog.scrollTop = terminalLog.scrollHeight;
         }
 
-        async function syncToNotion() {
-            const noteText = notepad.value.trim();
-            if (!noteText) {
-                alert("Notes scratchpad is empty!");
-                return;
-            }
-
-            const token = localStorage.getItem('notion_token');
-            const dbId = localStorage.getItem('notion_db_id');
-
-            if (!token || !dbId) {
-                alert("Please configure Notion integration token first!");
-                openNotionDialog();
-                return;
-            }
-
-            const syncBtn = document.querySelector('button[onclick="syncToNotion()"]');
-            const originalHTML = syncBtn.innerHTML;
-            syncBtn.innerHTML = `Syncing...`;
-            syncBtn.disabled = true;
-
-            try {
-                const response = await fetch('https://corsproxy.io/?https://api.notion.com/v1/pages', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Notion-Version': '2022-06-28',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        parent: { database_id: dbId },
-                        properties: {
-                            Name: {
-                                title: [
-                                    {
-                                        text: {
-                                            content: noteText.slice(0, 50) + (noteText.length > 50 ? '...' : '')
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        children: [
-                            {
-                                object: 'block',
-                                type: 'paragraph',
-                                paragraph: {
-                                    rich_text: [
-                                        {
-                                            type: 'text',
-                                            text: {
-                                                content: noteText
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    })
-                });
-
-                if (response.ok) {
-                    alert("Draft sync complete! Note dispatched to Notion.");
-                    notepad.value = '';
-                    localStorage.removeItem('abhinav_notes');
-                } else {
-                    const error = await response.json();
-                    throw new Error(error.message || "Failed post request");
-                }
-            } catch (err) {
-                console.error("Notion Sync Error:", err);
-                alert("Sync failed. Check API details and integrations share.");
-            } finally {
-                syncBtn.innerHTML = originalHTML;
-                syncBtn.disabled = false;
-            }
-        }
-
-        // --- 9. INTERACTIVE COMMAND TERMINAL ---
-        const termLog = document.getElementById('terminal-log');
-        const termInput = document.getElementById('terminal-input');
-
-        function appendToLog(cmd, response, isError = false) {
-            const promptEl = document.createElement('div');
-            promptEl.className = "text-brand-text mt-2 font-bold";
-            promptEl.innerText = `abhinav@morales:~$ ${cmd}`;
-            termLog.appendChild(promptEl);
-
-            const respEl = document.createElement('div');
-            respEl.className = isError ? "text-red-400" : "text-brand-muted";
-            respEl.innerHTML = response;
-            termLog.appendChild(respEl);
-            
-            termLog.scrollTop = termLog.scrollHeight;
-        }
-
-        function handleTerminalCommand(e) {
-            e.preventDefault();
-            const rawVal = termInput.value.trim();
-            termInput.value = '';
-
-            if (!rawVal) return;
-
-            const args = rawVal.split(' ');
-            const cmd = args[0].toLowerCase();
-
-            let response = '';
-            let isError = false;
-
-            switch (cmd) {
+        $('#terminal-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const raw = $('#terminal-input').value.trim();
+            $('#terminal-input').value = '';
+            if (!raw) return;
+            const [command, subcommand] = raw.split(/\s+/);
+            switch (command.toLowerCase()) {
                 case '/help':
-                    response = `Available terminal controls:<br>
-                      <span class="text-brand-accent">/about</span> - Print operator credentials<br>
-                      <span class="text-brand-accent">/projects</span> - Display ongoing codebase repos<br>
-                      <span class="text-brand-accent">/skills</span> - Print skills inventory indices<br>
-                      <span class="text-brand-accent">/pomodoro [start/pause/reset]</span> - Control timer widget<br>
-                      <span class="text-brand-accent">/notion</span> - Check Notion API configuration state<br>
-                      <span class="text-brand-accent">/clear</span> - Clear log logs`;
+                    appendToLog(raw, 'Commands: /about, /projects, /skills, /pomodoro start|pause|reset, /notes, /clear');
                     break;
                 case '/about':
-                    response = `Operator: Abhinav (Miles Morales Profile Active)<br>
-                      Journey: 1st Year BS in Data Science at IIT Madras (Class of 2029)<br>
-                      Core Focus: AI programming models & algorithmic Quant trading strategy builders.`;
+                    appendToLog(raw, 'Operator: Abhinav. Focus: data science, AI programming, and quant strategy builders.');
                     break;
                 case '/projects':
-                    response = `Active Repos:<br>
-                      - <span class="text-brand-accent">openai-vs-claude</span>: Capabilities comparisons.<br>
-                      - <span class="text-brand-accent">MoneyWise App</span>: Gamified finance conceptual draft.`;
+                    appendToLog(raw, 'Active repos: My-personal-dashboard, openai-vs-claude, MoneyWise App.');
                     break;
                 case '/skills':
-                    response = `Active Skills: Python, Prompting & Data Analysis workflows.`;
+                    appendToLog(raw, 'Active skills: Python, prompting, data analysis workflows, dashboard prototyping.');
                     break;
                 case '/pomodoro':
-                    const sub = args[1] ? args[1].toLowerCase() : '';
-                    if (sub === 'start') {
-                        if (!isPomoRunning) togglePomodoro();
-                        response = "Focus countdown active.";
-                    } else if (sub === 'pause') {
-                        if (isPomoRunning) togglePomodoro();
-                        response = "Focus countdown suspended.";
-                    } else if (sub === 'reset') {
-                        resetPomodoro();
-                        response = "Focus countdown initialized.";
-                    } else {
-                        response = "Usage: /pomodoro [start/pause/reset]";
-                    }
+                    if (subcommand === 'start' && !pomoRunning) togglePomodoro();
+                    else if (subcommand === 'pause' && pomoRunning) togglePomodoro();
+                    else if (subcommand === 'reset') resetPomodoro();
+                    appendToLog(raw, subcommand ? `Pomodoro ${subcommand} command handled.` : 'Usage: /pomodoro start|pause|reset');
                     break;
-                case '/notion':
-                    const token = localStorage.getItem('notion_token') ? 'ACTIVE (private token)' : 'UNCONFIGURED';
-                    const db = localStorage.getItem('notion_db_id') ? 'BOUND' : 'UNCONFIGURED';
-                    response = `Notion API Status:<br>
-                      Auth token: ${token}<br>
-                      Database code: ${db}`;
+                case '/notes':
+                    appendToLog(raw, notes.value ? 'Local notes are saved in this browser.' : 'No local note is currently saved.');
                     break;
                 case '/clear':
-                    termLog.innerHTML = '<div class="text-[10px] text-brand-accent">SPIDEY_NET ACTIVE. Type <span class="font-bold">/help</span> for console guidelines.</div>';
-                    return;
+                    terminalLog.innerHTML = '<div class="text-brand-accent">SPIDEY_NET active. Type <span class="font-bold">/help</span> for console controls.</div>';
+                    break;
                 default:
-                    response = `Console Error: Command "${cmd}" not recognized. Type /help.`;
-                    isError = true;
+                    appendToLog(raw, `Command "${command}" not recognized. Type /help.`, true);
             }
-
-            appendToLog(rawVal, response, isError);
-        }
+        });
     </script>
-    <!-- LIQUID GLASS SVG FILTERS -->
-    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <!-- Gooey Blend Filter for buttons -->
-            <filter id="gooey-blend">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
-                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-            </filter>
-            
-            <!-- Shimmering Liquid Glass Refraction Filter -->
-            <filter id="liquid-glass-refraction">
-                <feTurbulence type="turbulence" baseFrequency="0.02 0.04" numOctaves="2" result="noise" seed="5">
-                    <animate attributeName="baseFrequency" dur="15s" values="0.02 0.04;0.04 0.08;0.02 0.04" repeatCount="indefinite"/>
-                </feTurbulence>
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-        </defs>
-    </svg>
-    <!-- Trigger Rebuild -->
 </body>
 </html>
