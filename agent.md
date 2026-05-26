@@ -4,13 +4,14 @@ This file is for AI coding agents such as Codex, Claude Code, and similar tools 
 
 ## Project Summary
 
-`My-personal-dashboard` is a static personal dashboard for Abhinav with a Miles Morales / Spider-Verse inspired visual system. It is designed as a high-contrast, frosted-glass bento dashboard with interactive widgets, local browser storage, and a few external browser-side integrations.
+`My-personal-dashboard` is a static personal dashboard for Abhinav with a Miles Morales / Spider-Verse inspired visual system. It is a high-contrast, frosted-glass bento dashboard with focus tools, local notes, audio controls, an AI news stream, and a terminal-style command panel.
 
-The project is intentionally compact. There is no build system, package manager, framework, or backend server in the repo. The application is mostly contained in one HTML file.
+The project is intentionally compact. There is no build system, package manager, framework, or backend server. The application is contained in `index.html`.
 
 ## Repository Map
 
 - `index.html` - Main application. Contains the HTML layout, Tailwind CDN config, custom CSS, and all JavaScript behavior.
+- `README.md` - Human-facing project overview and local usage notes.
 - `DESIGN.md` - Design system reference for colors, typography, spacing, component rules, and visual constraints.
 - `.nojekyll` - Keeps GitHub Pages from running Jekyll processing.
 - `ribbed_glass.jpg` - Local background texture used by the dashboard.
@@ -23,12 +24,9 @@ This is a static site that can be opened directly in a browser or served by any 
 
 There are no install steps. Do not add `package.json`, bundlers, transpilers, or framework scaffolding unless the user explicitly asks for a larger architecture change.
 
-Useful local checks:
+Useful local check:
 
 ```bash
-# Option 1: open index.html directly in a browser
-
-# Option 2: serve the repo with a simple static server
 python -m http.server 8000
 ```
 
@@ -41,12 +39,12 @@ The dashboard currently includes:
 - responsive bento-card layout
 - dark default theme with light-theme toggle
 - live clock and greeting
-- animated cursor canvas with particle web effect
+- reduced-motion-aware cursor canvas effect
 - Pomodoro timer with focus and break modes
 - audio player with playlist, volume, progress labels, and canvas visualizer
 - AI news stream from TechCrunch RSS through `rss2json`
-- fallback news items when RSS loading fails
-- Notion scratchpad dialog and sync flow
+- practical fallback news cards when RSS loading fails
+- local browser notes saved with `localStorage`
 - local terminal-style command console
 
 Important terminal commands in the UI:
@@ -58,7 +56,7 @@ Important terminal commands in the UI:
 - `/pomodoro start`
 - `/pomodoro pause`
 - `/pomodoro reset`
-- `/notion`
+- `/notes`
 - `/clear`
 
 ## External Browser Dependencies
@@ -67,12 +65,10 @@ The app depends on browser-accessible external services and CDNs:
 
 - Tailwind CSS CDN: `https://cdn.tailwindcss.com`
 - Google Fonts: Outfit, Plus Jakarta Sans, and Space Mono
-- Avatar image from `https://ui-avatars.com`
 - SoundHelix MP3 files for the audio player
 - TechCrunch AI RSS feed through `https://api.rss2json.com`
-- Notion page creation through `https://corsproxy.io/?https://api.notion.com/v1/pages`
 
-When changing these integrations, keep failure states graceful. The dashboard should still load visually even if RSS, audio, avatar, fonts, or Notion requests fail.
+When changing these integrations, keep failure states graceful. The dashboard should still load visually even if RSS, audio, fonts, or other network requests fail.
 
 ## Design Rules
 
@@ -98,6 +94,7 @@ When editing UI:
 - avoid introducing unrelated accent hues
 - keep mobile and desktop layouts usable
 - avoid breaking the backdrop images and canvas layers
+- keep reduced-motion behavior intact
 
 ## Editing Guidelines For Agents
 
@@ -106,32 +103,26 @@ Because `index.html` contains markup, styles, and behavior together, make small 
 Prefer these patterns:
 
 - update existing CSS variables instead of scattering new hard-coded colors
-- reuse `.bento-card`, `.liquid-glass-shimmer`, `.btn-interactive`, and existing typography classes
+- reuse `.bento-card`, `.card-content`, existing typography classes, and the crimson accent system
 - keep widget JavaScript near the related existing section
 - keep new browser state in `localStorage` only when persistence is expected
-- keep all user-facing text consistent with the current tactical dashboard tone
+- create DOM nodes with `textContent` for fetched or user-controlled content
+- keep user-facing text consistent with the tactical dashboard tone
 
 Avoid these unless the user asks:
 
 - adding a frontend framework
-- splitting the app into many files
 - adding a build step
 - adding server-side code
 - committing real API keys or tokens
+- restoring browser-side Notion token sync through a public proxy
 - replacing the Miles Morales visual direction
 
 ## Security And Privacy Notes
 
-The Notion integration stores the token and database ID in browser `localStorage`. Agents must never add real Notion credentials to the repository.
+Notes are saved locally in the browser with `localStorage`. The previous Notion-style browser proxy sync is not part of the cleaned implementation because sending private API tokens through a public CORS proxy is not a safe default.
 
-If changing Notion behavior:
-
-- keep token entry user-controlled
-- do not hard-code secrets
-- validate empty note, missing token, and missing database ID states
-- preserve clear failure alerts or replace them with an equally visible UI state
-
-The current browser-side Notion flow uses a public CORS proxy. Treat this as a convenience for a personal dashboard, not as a secure production pattern.
+If the user asks for Notion sync later, prefer a small backend or serverless function that keeps tokens off the client.
 
 ## Verification Checklist
 
@@ -143,9 +134,9 @@ After changes, verify at minimum:
 - dark/light theme toggle works
 - clock updates once per second
 - Pomodoro start, pause, reset, and break mode work
-- audio play/pause, previous/next, and volume controls work
-- news section renders RSS items or fallback items
-- Notion dialog opens, closes, validates fields, and does not expose secrets
+- audio play/pause, previous/next, volume, and unavailable-track fallback work
+- news section renders RSS items or fallback cards
+- notes save and clear locally
 - terminal commands listed in this file still work
 
 For visual changes, also check:
@@ -159,11 +150,11 @@ For visual changes, also check:
 
 ### Add A New Bento Card
 
-Add a new `<section>` in the main grid, use the existing `bento-card` pattern, include a `liquid-glass-shimmer` child, and choose responsive grid spans that do not crowd the current layout.
+Add a new `<section>` in the main grid, use the existing `bento-card` pattern, include a `card-content` child, and choose responsive grid spans that do not crowd the current layout.
 
 ### Add A Terminal Command
 
-Update the `handleTerminalCommand` switch in `index.html`. Add the command to `/help`, handle arguments carefully, and keep responses short enough for the terminal panel.
+Update the terminal submit handler in `index.html`. Add the command to `/help`, handle arguments carefully, and keep responses short enough for the terminal panel.
 
 ### Change Dashboard Identity Text
 
@@ -175,7 +166,7 @@ Edit `fetchAINews()`. Keep the fallback path through `renderBackupNews()` so the
 
 ### Change Audio Tracks
 
-Edit the `playlist` array in `index.html`. Use browser-playable audio URLs and keep track names short enough for the compact card layout.
+Edit the `tracks` array in `index.html`. Use browser-playable audio URLs and keep track names short enough for the compact card layout.
 
 ## Agent Defaults
 
